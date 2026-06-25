@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Tracker Intel // Mobile DnB &amp; Jungle Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #26211C;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .vinyl-groove {
+            background: repeating-radial-gradient(circle, #26211C, #26211C 2px, #36302B 2px, #36302B 4px);
+        }
+        .hardware-label {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 900;
+        }
+        /* Custom card styling with vintage MPC / vinyl sleeve style aesthetic */
+        .mpc-card {
+            background-color: #F4EFE6;
+            border: 2px solid #26211C;
+            box-shadow: 4px 4px 0px #26211C;
+        }
+        .mpc-button-orange {
+            background-color: #E65F2B;
+            color: #FDFBF7;
+            border: 2px solid #26211C;
+            box-shadow: 2px 2px 0px #26211C;
+        }
+        .mpc-button-orange:hover {
+            background-color: #FF7443;
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px #26211C;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDFBF7; }
+        ::-webkit-scrollbar-thumb { background: #26211C; border-radius: 4px; }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-4xl mx-auto">
+
+    <header class="mpc-card p-6 mb-8 relative overflow-hidden bg-gradient-to-r from-[#F4EFE6] to-[#EAE3D5]">
+        <div class="absolute right-4 top-4 w-16 h-16 rounded-full vinyl-groove opacity-20 hidden md:block"></div>
+        <div class="flex justify-between items-start border-b-2 border-gray-900 pb-4 mb-4">
+            <div>
+                <span class="text-xs bg-[#26211C] text-[#FDFBF7] px-2 py-0.5 font-bold tracking-widest uppercase">SECTION // AUDIO CORES</span>
+                <h1 class="text-xl md:text-3xl font-black text-[#26211C] tracking-tight uppercase mt-1">
+                    Pocket Tracker Setup: Head-Fi DnB on $5
+                </h1>
+            </div>
+            <div class="text-right font-bold text-xs uppercase hidden sm:block text-[#E65F2B]">
+                MODEL: PXS-2026 // MOBILE RUNTIME
+            </div>
+        </div>
+        <p class="text-xs md:text-sm text-gray-700 max-w-2xl leading-relaxed">
+            Allocating Play Store credits into high-fidelity music synthesis engines. Bypassing modern cloud subscriptions to return straight to the 90s tracking grid using historical source archives and offline modular hardware.
+        </p>
+    </header>
+
+    <main class="space-y-8">
+        
+        <section class="space-y-4">
+            <h2 class="text-lg font-black border-b-2 border-gray-900 pb-1 uppercase tracking-wider text-[#26211C]">
+                1. APP EVALUATION LOGS
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="mpc-card p-5 flex flex-col justify-between bg-white">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-3">
+                            <h3 class="font-black uppercase tracking-wide text-[#E65F2B]">SUNVOX // THE VERDICT</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-600 rounded">SELECTED</span>
+                        </div>
+                        <p class="text-xs text-gray-700 leading-relaxed mb-4">
+                            The definitive mobile production engine. SunVox scales an incredible modular architecture mixed with a traditional 90s vertical pattern tracker grid. Perfectly optimized for capacitive touchscreens, it provides precise control over breakbeat sample slicing, micro-tuning, envelope modifications, and granular hardware emulation. Runs rings around modern DAWs for old-school electronic engineering.
+                        </p>
+                        <ul class="text-xs text-gray-600 space-y-1 font-sans list-none mb-4">
+                            <li><strong class="text-gray-900 font-mono">Cost:</strong> ~$3.50 - $4.00 (Fits $5 Play Store Budget)</li>
+                            <li><strong class="text-gray-900 font-mono">Aesthetic:</strong> Vintage FastTracker II / OctaMED meets Modular Synth</li>
+                            <li><strong class="text-gray-900 font-mono">Pros:</strong> Native sampler, native interpolation controls, full tracker effect command column (09 slice offset commands).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-[#F4EFE6] p-2 border border-gray-300 rounded text-[11px] text-gray-600">
+                        ⚡ <span class="font-bold text-gray-900">DOS Emulation Alignment:</span> Closest hardware wrapper to running an Amiga tracker inside your pocket.
+                    </div>
+                </div>
+
+                <div class="mpc-card p-5 flex flex-col justify-between bg-white opacity-85">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-3">
+                            <h3 class="font-black uppercase tracking-wide text-gray-500">PIXITRACKER // THE CRITIQUE</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 bg-red-100 text-red-800 border border-red-400 rounded">REJECTED</span>
+                        </div>
+                        <p class="text-xs text-gray-700 leading-relaxed mb-4">
+                            A fun, lightweight, pixelated loop builder created by Alexander Zolotov (same developer as SunVox). However, it will give you massive headaches if you try to produce proper Jungle or Drum &amp; Bass. It completely drops the traditional tracker command grid in favor of a simplified step sequencer matrix, rendering it incapable of handling fast-paced breakbeat chops, complex pitch-slides, or advanced sample modulation.
+                        </p>
+                        <ul class="text-xs text-gray-600 space-y-1 font-sans list-none mb-4">
+                            <li><strong class="text-gray-900 font-mono">Cost:</strong> ~$2.99</li>
+                            <li><strong class="text-gray-900 font-mono">Aesthetic:</strong> 8-Bit Lo-Fi Toy Sequencer</li>
+                            <li><strong class="text-gray-900 font-mono">Cons:</strong> No hex tracker grids, zero fine sample chopping, highly constrained pattern sequence lengths.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-amber-50 p-2 border border-amber-300 rounded text-[11px] text-amber-900">
+                        ⚠️ <span class="font-bold">System Boundary Warning:</span> Built for simple chiptune sketches, not high-speed rolling breakbeats.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <h2 class="text-lg font-black border-b-2 border-gray-900 pb-1 uppercase tracking-wider text-[#26211C]">
+                2. DEEP-WELL SOUND SOURCE REPOSITORIES
+            </h2>
+            <p class="text-xs text-gray-600">The raw ingredients for your tracker. Download these files onto your device's filesystem and feed them directly into the SunVox Sampler module:</p>
+            
+            <div class="space-y-4">
+                <div class="mpc-card p-4 bg-white">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 pb-2 mb-2">
+                        <h4 class="text-sm font-black text-gray-900 uppercase">Blu Mar Ten // JungleJungle (1989-1999)</h4>
+                        <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-700 px-2 py-0.5 rounded font-bold uppercase tracking-widest mt-1 sm:mt-0">Free Holy Grail</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                        A legendary 390MB curation compiled directly from pristine personal vinyl and CD collections by seminal producers Blu Mar Ten. Contains over 650 perfectly cropped, normalized, period-correct 16-bit WAV samples. Absolutely no MP3 generation artifacts are present in the pipeline.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-[#F4EFE6] p-3 rounded border border-gray-300 font-mono">
+                        <div>• 224 Classic Breaks</div>
+                        <div>• 58 Rolling Basslines</div>
+                        <div>• 120 Atmospheric FX</div>
+                        <div>• 77 Vintage Pads</div>
+                    </div>
+                </div>
+
+                <div class="mpc-card p-4 bg-white">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 pb-2 mb-2">
+                        <h4 class="text-sm font-black text-gray-900 uppercase">Internet Archive // Zero-G Jungle Warfare</h4>
+                        <span class="text-[10px] bg-blue-950 text-blue-400 border border-blue-700 px-2 py-0.5 rounded font-bold uppercase tracking-widest mt-1 sm:mt-0">Historical Preserve</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                        The ultimate 90s hardcore sound library series (Volumes 1, 2, and 3). Released starting in 1995, these sample CDs became the architectural foundation for nearly every iconic jungle and early drum &amp; bass record in existence. They are fully archived and downloadable as free, uncompressed WAV/CDDA backups on the Internet Archive.
+                    </p>
+                    <p class="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 p-2 rounded">
+                        💡 <span class="font-bold">Sampling Trace:</span> This archive holds the raw source materials for the classic Amen variations, Apache flips, Think breaks, ruffneck vocal stabs, and imperial sub-bass presets.
+                    </p>
+                </div>
+
+                <div class="mpc-card p-4 bg-white">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 pb-2 mb-2">
+                        <h4 class="text-sm font-black text-gray-900 uppercase">Modern Neurofunk // Blackout &amp; Teddy Killaz</h4>
+                        <span class="text-[10px] bg-purple-950 text-purple-400 border border-purple-700 px-2 py-0.5 rounded font-bold uppercase tracking-widest mt-1 sm:mt-0">Premium Aggression</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                        When you need modern, clinical, speaker-tearing mechanical bass engineering. Look toward commercial packs from labels like <strong class="text-gray-900">Blackout Music NL</strong> (Black Sun Empire, Neonlight) or production sample libraries curated by <strong class="text-gray-900">Teddy Killaz</strong>. These packs provide highly processed reese stabs, wavetable modulated neuro-basses, and punchy, tight acoustic-synthetic hybrid drum hits that stay clean when layered over rapid tempos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <h2 class="text-lg font-black border-b-2 border-gray-900 pb-1 uppercase tracking-wider text-[#26211C]">
+                3. INTEGRATION MEMORY CACHE
+            </h2>
+            <p class="text-xs text-gray-400">Copy and paste this markdown summary block into your agentic workspaces to seamlessly initialize the tracking logic and project parameters for future sessions.</p>
+            
+            <div class="mpc-card p-4 bg-[#1E1C19]">
+                <div class="flex justify-between items-center mb-2 border-b border-stone-800 pb-2">
+                    <span class="text-xs font-bold text-orange-400 tracking-wider font-mono">[MARKDOWN METADATA CACHE]</span>
+                    <button onclick="copyCacheText()" id="btn-copy" class="text-xs text-stone-400 hover:text-white bg-stone-800 px-2 py-1 rounded border border-stone-700 transition-colors">Copy Cache</button>
+                </div>
+                <textarea id="markdown-cache" readonly class="w-full h-48 bg-[#141210] border border-stone-900 rounded p-3 text-xs text-stone-400 font-mono focus:outline-none resize-y"># TIMELINE TRACE: MOBILE TRACKER &amp; DRUM &amp; BASS ENGINE
+
+## 1. STRATEGIC SELECTION
+* **App Choice:** SunVox Tracker (~$3.50-$4.00) selected over PixiTracker. Bypasses the oversimplified step sequencer limitations of PixiTracker to unlock native modular synth paths and traditional 90s horizontal tracking grids.
+* **Production Context:** 160-175 BPM breakbeat chopping, micro-step modulation, and localized sampling routines deployed natively on hardware touchscreen devices.
+
+## 2. SAMPLE SOURCE TRACKING
+* **The Vintage Grail:** Blu Mar Ten's "JungleJungle (1989-1999)" Pack. 390MB, 650+ uncompressed 16-bit WAV files (breaks, pads, rolling basses, vocal stabs) harvested from original vinyl releases. Fully normalized with zero lossy MP3 compression.
+* **The Foundation Preserve:** Zero-G "Jungle Warfare" Volumes 1-3. Downloaded as free, original sample CD dumps from the Internet Archive (folksoundomy collections).
+* **Modern Expansion Packs:** Blackout Music NL and Teddy Killaz production libraries. Curated for clinical, high-impact neurofunk bass engineering and hardware-optimized drum design.
+
+## 3. CORE SUNVOX CODES &amp; COMMAND COLUMNS
+* **Break Slicing Command:** Employs the `09XX` effect command array inside the tracker grid column to shift sample start offsets dynamically (e.g., cutting an Amen loop into micro-steps across the pattern grid).
+* **Memory Protocol:** Store tracking assets natively on device local filesystems. Avoids cloud network latency, preserving a zero-telemetry, fully local music production environment.</textarea>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-12 pt-4 border-t-2 border-gray-900 text-center text-[10px] text-gray-500 font-bold tracking-widest uppercase">
+        // TRACKER PROTOCOL VERIFIED // AUDIO BUFFER ACTIVE // PLAYSTORE CREDIT CLEARED //
+    </footer>
+
+    <script>
+        function copyCacheText() {
+            const cacheArea = document.getElementById('markdown-cache');
+            cacheArea.select();
+            cacheArea.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(cacheArea.value).then(() => {
+                const btn = document.getElementById('btn-copy');
+                btn.textContent = "COPIED TO CLIPBOARD!";
+                btn.classList.remove('text-stone-400', 'border-stone-700');
+                btn.classList.add('text-emerald-400', 'border-emerald-600');
+                
+                setTimeout(() => {
+                    btn.textContent = "Copy Cache";
+                    btn.classList.remove('text-emerald-400', 'border-emerald-600');
+                    btn.classList.add('text-stone-400', 'border-stone-700');
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
