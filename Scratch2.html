@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign Armory // Meta-Orchestrator Flight Recorder</title>
+    <title>Sovereign Armory // Meta-Orchestrator Ledger</title>
     <style>
         :root {
             --bg-primary: #0a0e17;
@@ -14,7 +14,6 @@
             --accent-cyan: #00f5d4;
             --accent-orange: #ff6b6b;
             --accent-yellow: #ffee65;
-            --accent-teal: #3a86ff;
             --border-color: #24324d;
         }
 
@@ -89,6 +88,7 @@
             font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         .tab:hover {
@@ -98,6 +98,7 @@
 
         section {
             margin-bottom: 4rem;
+            scroll-margin-top: 20px;
         }
 
         h2 {
@@ -137,11 +138,7 @@
             border-radius: 6px;
             padding: 1.5rem;
             position: relative;
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover {
-            border-color: #3b4f74;
+            margin-bottom: 1.5rem;
         }
 
         .card h3 {
@@ -173,21 +170,11 @@
             border: 1px solid var(--accent-cyan);
         }
 
-        ul, ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-        }
-
         .why-block {
             background-color: rgba(255, 238, 101, 0.03);
             border-left: 3px solid var(--accent-yellow);
             padding: 1rem 1.25rem;
-            margin: 1.5rem 0;
+            margin: 1.5rem 0 0 0;
             border-radius: 0 4px 4px 0;
         }
 
@@ -243,7 +230,7 @@
 
         .copy-box-body {
             padding: 1rem;
-            max-height: 550px;
+            max-height: 600px;
             overflow-y: auto;
         }
 
@@ -253,6 +240,7 @@
             color: #a6accd;
             white-space: pre-wrap;
             word-wrap: break-word;
+            line-height: 1.4;
         }
 
         .suggestion-box {
@@ -270,23 +258,19 @@
             margin-bottom: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .suggestion-list {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .suggestion-item {
             background-color: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            padding: 1rem;
+            padding: 1.25rem;
             border-radius: 6px;
-            cursor: pointer;
             transition: all 0.2s ease;
         }
 
@@ -298,13 +282,13 @@
         .suggestion-prompt {
             color: var(--accent-cyan);
             font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
 
         .suggestion-desc {
-            color: var(--text-muted);
-            font-size: 0.85rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
         }
     </style>
 </head>
@@ -349,7 +333,7 @@
             </div>
         </div>
 
-        <div class="card" style="border-color: var(--accent-cyan); background-color: rgba(0, 245, 212, 0.01);">
+        <div class="card" style="border-color: var(--accent-cyan); background-color: rgba(0, 245, 212, 0.01); margin-bottom: 0;">
             <h3>Chosen Pattern: Hierarchical Supervisor <span class="badge chosen">Sovereign Target</span></h3>
             <p>A fluid, context-driven Reasoning Engine (Antigravity/agy) holding macro-goals purely in its active memory window, commanding an isolated, stateless child subdirectory via an out-of-band hardware communication gate.</p>
             <div class="why-block" style="border-left-color: var(--accent-cyan); background-color: rgba(0, 245, 212, 0.03);">
@@ -363,8 +347,8 @@
         <h2>02 // The Deep "Why" Ledger: Strategic Architectural Pivots</h2>
         <p>This panel captures the "Edison Logbook"—the precise architectural reasoning behind the structural choices making up this runtime framework, preserving meta-cognition for future iterations.</p>
         
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 1: From Numeric Compliance Scores to Uncompromising Binary Gates</h4>
+        <div class="card">
+            <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 1: From Numeric Compliance Scores to Uncompromising Binary Gates</h3>
             <p><strong>The Legacy Approach:</strong> The critic agent reads written code and outputs a volatile percentage rating (e.g., 85/100), branching steps based on a sliding numerical threshold.</p>
             <div class="why-block">
                 <div class="why-title">The Rationale For Abandonment</div>
@@ -372,8 +356,8 @@
             </div>
         </div>
 
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 2: From Task-List Mutation Diffs to Clean Remediation Cascades</h4>
+        <div class="card">
+            <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 2: From Task-List Mutation Diffs to Clean Remediation Cascades</h3>
             <p><strong>The Legacy Approach:</strong> When a build pass fails verification, the supervisor attempts to inject checkboxes or edit task blocks directly inside the running project's tracking documents.</p>
             <div class="why-block">
                 <div class="why-title">The Rationale For Abandonment</div>
@@ -381,8 +365,8 @@
             </div>
         </div>
 
-        <div class="card" style="margin-bottom: 1.5rem;">
-            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 3: From Active Status Polling to Kernel-Level OS Locks (inotifywait)</h4>
+        <div class="card">
+            <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 3: From Active Status Polling to Kernel-Level OS Locks (inotifywait)</h3>
             <p><strong>The Legacy Approach:</strong> The supervisor triggers the child builder process in the background and continuously makes repetitive API tool turns every few seconds to poll file modifications.</p>
             <div class="why-block">
                 <div class="why-title">The Rationale For Abandonment</div>
@@ -390,8 +374,8 @@
             </div>
         </div>
 
-        <div class="card">
-            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 4: The Ephemeral, Context-Blind Critic Gate</h4>
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 4: The Ephemeral, Context-Blind Critic Gate</h3>
             <p><strong>The Legacy Approach:</strong> The parent supervisor engine acts as its own auditor, evaluating the child subdirectory directly within its long-running session context.</p>
             <div class="why-block">
                 <div class="why-title">The Rationale For Abandonment</div>
@@ -409,7 +393,8 @@
                 <span class="copy-box-title">FILEPATH: supervisor_goal.md</span>
                 <button class="copy-box-btn" onclick="copyCode('code-goal')">Copy Content</button>
             </div>
-            <div class="copy-box-body">
+            <div class="copy-box-container" style="margin: 0; border: none; border-radius: 0;">
+                <div class="copy-box-body">
 <pre id="code-goal"># Project-Agnostic Meta-Orchestrator Specification (Lean Edition)
 
 ## 1. Directory Scaffolding & Component Mapping
@@ -441,7 +426,7 @@ GOVERNANCE WORKING DIRECTORY (.)
 Execute the following steps continuously across all files stored inside `./future_phases/` until the pipeline pool is entirely exhausted:
 
 ### Step 3.1: State Initialization & Crash Recovery Check
-1. Read `./state.json` to check for an existing execution checkpoint. 
+1. Read `./state.json` to check for an existing execution checkpoint.
    - If an active phase is recorded, resume directly at **Step 3.2** using that file to recover from a previous system crash.
    - If no checkpoint exists, locate the next file in `./future_phases/`, copy it to `./specs/current_phase.md`, and update `./state.json` with the new active target metadata.
 
@@ -449,3 +434,161 @@ Execute the following steps continuously across all files stored inside `./futur
 1. Launch the inner developer agent loop as a background daemon process inside the sub-folder context, piping standard outputs to a local capture stream:
    ```bash
    cd project && iteratr build -s ../specs/current_phase.md --headless &gt; ../child_exec.log 2&gt;&1 & echo $! &gt; ../child.pid
+   ```
+2. Instantly execute the hardware watcher script to monitor the process:
+   ```bash
+   ./monitor.sh &
+   ```
+3. **The Kernel-Level Wait Block (Do Not Time Out)**: Execute this precise command to pass thread control completely to the Linux kernel via filesystem hooks:
+   ```bash
+   inotifywait -q -e modify monitor.status
+   ```
+   *CRITICAL RUNTIME DIRECTIVE: This command will lock the shell thread indefinitely (often taking 10 to 20+ minutes) while the inner loop compiles, cross-assembles, and runs tests. You MUST NOT interpret this long blocking period as a terminal hang, error, or session timeout. Stand down your internal execution timer entirely. The command will release naturally the exact millisecond the background gatekeeper updates the status.*
+
+### Step 3.3: The Zero-Bias Isolated Critic Gate
+Once the `inotifywait` block releases, read `./monitor.status`. If process death is confirmed, spawn a completely separate, one-shot, non-interactive `agy` call to execute a cold audit. This critic has zero awareness of the supervisor's historical timeline and zero incentive to cheat:
+```bash
+agy --goal "Act as a brutal, adversarial forensic systems auditor. Analyze the entire codebase inside project/. Verify absolute alignment against the requirements outlined in specs/current_phase.md. You must evaluate using a strict binary PASS or FAIL framework. Write your explicit final verdict in the first line of project/audit_report.md as exactly 'VERDICT: PASS' or 'VERDICT: FAIL', followed by a detailed technical postmortem. CRITIC AUTOMATIC FAILURE MANDATES: You must return a FAIL if you find any placeholder logic, incomplete methods, comments like '// TODO' or '// Stub', hardcoded mock data, thread-safety violations, or unhandled exceptions."
+```
+
+### Step 3.4: Control Branching via Remediation Cascades
+Analyze the first line within `project/audit_report.md` to process the binary verdict:
+
+- **BRANCH A: VERDICT: PASS**
+  1. Archive the milestone: `mv ./specs/current_phase.md ./specs/completed/`
+  2. Wipe the active target fields in `./state.json` to mark the phase cleared.
+  3. Cycle clean and advance back to **Step 3.1** to process the next phase.
+
+- **BRANCH B: VERDICT: FAIL**
+  1. Extract the explicit bugs and structural omissions from `project/audit_report.md`.
+  2. **The Zero-Mutation Step**: Do not touch, alter, or edit any files inside `./project/` or `./specs/completed/`. Overwrite `./specs/current_phase.md` with a completely fresh, brand-new specification containing a clean `# Tasks` markdown header, translating the critic's exact complaints into uncompleted checkboxes (`- [ ]`).
+  3. Recycle back directly to **Step 3.2** to run a clean remediation patch pass. Limit these cycles to 4 attempts per phase before tripping the circuit breaker.
+
+### Step 3.5: Circuit Breaker Intervention
+Halt all automated procedures, dump process trees, and broadcast an explicit alert terminal block to the human operator if:
+- A single phase triggers 4 consecutive remediation specification attempts without hitting a 'PASS' verdict.
+- The monitor status file flags a `TRIGGER_LLM_TIMEOUT` (the inner loop engine hung).
+```</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gatekeeper">
+        <h2>04 // The Token-Saving Hardware Gatekeeper Code</h2>
+        <p>This companion shell engine runs asynchronously alongside your background processes. It evaluates PID health and detects loop hangs without triggering an expensive LLM API transaction.</p>
+        
+        <div class="copy-box-container">
+            <div class="copy-box-header">
+                <span class="copy-box-title">FILEPATH: monitor.sh</span>
+                <button class="copy-box-btn" onclick="copyCode('code-monitor')">Copy Content</button>
+            </div>
+            <div class="copy-box-body">
+<pre id="code-monitor">#!/bin/bash
+# monitor.sh - Zero-Token Hardware Monitor Daemon
+
+CHILD_PID=$(cat child.pid)
+LOG_FILE="child_exec.log"
+JETSTREAM_LOG="project/.iteratr/logs/jetstream.log"
+STAGNATION_TIMEOUT=300 # 5 minutes execution threshold
+
+echo "[*] Telemetry daemon active. Locking onto PID: $CHILD_PID"
+
+while true; do
+    # 1. Check if the inner builder process has died naturally
+    if ! kill -0 "$CHILD_PID" 2>/dev/null; then
+        wait "$CHILD_PID"
+        EXIT_CODE=$?
+        echo "[!] Execution terminated. Code: $EXIT_CODE"
+        
+        if [ $EXIT_CODE -eq 0 ]; then
+            echo "TRIGGER_LLM_SUCCESS" &gt; monitor.status
+        else
+            echo "TRIGGER_LLM_CRASH" &gt; monitor.status
+        fi
+        break
+    fi
+
+    # 2. Check if the log files have frozen (Stagnation/Hallucination Loop)
+    if [ -f "$JETSTREAM_LOG" ]; then
+        LAST_MOD=$(stat -c %Y "$JETSTREAM_LOG" 2>/dev/null)
+        CURRENT_TIME=$(date +%s)
+        IDLE_TIME=$((CURRENT_TIME - LAST_MOD))
+
+        if [ "$IDLE_TIME" -gt "$STAGNATION_TIMEOUT" ]; then
+            echo "[!] CRITICAL: Engine stagnation caught at $IDLE_TIME seconds."
+            kill -9 "$CHILD_PID"
+            echo "TRIGGER_LLM_TIMEOUT" &gt; monitor.status
+            break
+        fi
+    fi
+
+    # Sleep 15 seconds. Cost: 0 API tokens.
+    sleep 15
+done</pre>
+            </div>
+        </div>
+
+        <div class="card" style="border-color: var(--border-color); margin-bottom: 0;">
+            <h4 style="color: #ffffff; margin-bottom: 0.5rem; font-family: monospace; font-size: 0.95rem;">THE DEPLOYMENT TRIGGER COMMAND</h4>
+            <p>Execute this sequence inside your permanent cloud <code>tmux</code> panel to trigger complete system automation loops out-of-band:</p>
+            <pre style="background: #05070b; padding: 0.75rem 1rem; border-radius: 4px; border: 1px solid var(--border-color); color: var(--accent-cyan); font-family: monospace; font-size: 0.95rem; margin-top: 0.5rem;">chmod +x monitor.sh && agy --goal "$(cat supervisor_goal.md)" --loop</pre>
+        </div>
+    </section>
+
+    <section id="guided-learning" style="margin-bottom: 0;">
+        <div class="suggestion-box">
+            <div class="suggestion-title">
+                <span>05 // Advanced Guided Exploration & Next Horizon Prompts</span>
+            </div>
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem;">Inject these targeted exploratory prompts into your local development interfaces to dive deeper into custom database modules, notification hooks, and state vectors.</p>
+            
+            <div class="suggestion-list">
+                <div class="suggestion-item">
+                    <div class="suggestion-prompt">Prompt // Structuring the Knowledge Graph Consolidator</div>
+                    <div class="suggestion-desc">"Help me sketch a standalone Python or Go companion utility that reads a completed phase directory tree and parses the local project/.iteratr/ database files, outputting a clean graph relation schema mapping (Task)-[MUTATED]->(File) or (Error)-[RESOLVED_BY]->(Patch) to feed a Neo4j instance."</div>
+                </div>
+                
+                <div class="suggestion-item">
+                    <div class="suggestion-prompt">Prompt // Engineering Push Notification Webhooks</div>
+                    <div class="suggestion-desc">"Modify the monitor.sh gatekeeper script block so that whenever it writes TRIGGER_LLM_TIMEOUT or TRIGGER_LLM_SUCCESS to disk, it executes a background curl command piping real-time pipeline status metrics straight to an external Discord or Telegram alert webhook interface."</div>
+                </div>
+
+                <div class="suggestion-item">
+                    <div class="suggestion-prompt">Prompt // Developing Complex Cross-Phase Dependencies</div>
+                    <div class="suggestion-desc">"How can we modify the parent supervisor's state.json architecture to handle complex parallel pipelines? If I have future_phases/ partitioned into modules, how should the supervisor track dependent branching paths if a phase relies on code verified three steps back?"</div>
+                </div>
+
+                <div class="suggestion-item">
+                    <div class="suggestion-prompt">Prompt // Designing the Automated Circuit Breaker Manual Override</div>
+                    <div class="suggestion-desc">"Draft a layout for an interactive shell routine that fires if Step 3.5's circuit breaker trips. It should freeze execution parameters but drop into an interactive agy chat portal right within the parent tmux pane, allowing me to pass manual design hints before letting the supervisor reset its loop counters."</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function copyCode(id) {
+        const codeElement = document.getElementById(id);
+        const text = codeElement.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = codeElement.parentElement.parentElement.querySelector('.copy-box-btn');
+            const originalText = btn.innerText;
+            btn.innerText = 'Copied!';
+            btn.style.backgroundColor = 'var(--accent-cyan)';
+            btn.style.color = 'var(--bg-primary)';
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = 'transparent';
+                btn.style.color = 'var(--accent-cyan)';
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+</script>
+
+</body>
+</html>
+
