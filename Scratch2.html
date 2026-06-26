@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Armory // Meta-Orchestrator Flight Recorder</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121824;
+            --bg-card: #1a2333;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-cyan: #00f5d4;
+            --accent-orange: #ff6b6b;
+            --accent-yellow: #ffee65;
+            --accent-teal: #3a86ff;
+            --border-color: #24324d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .registry-tag {
+            font-family: monospace;
+            color: var(--accent-cyan);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 700px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            border-color: var(--accent-cyan);
+            color: #ffffff;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid var(--accent-orange);
+            padding-left: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #3b4f74;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .badge.failed {
+            background-color: rgba(255, 107, 107, 0.15);
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange);
+        }
+
+        .badge.chosen {
+            background-color: rgba(0, 245, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .why-block {
+            background-color: rgba(255, 238, 101, 0.03);
+            border-left: 3px solid var(--accent-yellow);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .why-title {
+            font-weight: bold;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.25rem;
+        }
+
+        .copy-box-container {
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #05070b;
+            overflow: hidden;
+        }
+
+        .copy-box-header {
+            background-color: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-box-title {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
+        .copy-box-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .copy-box-btn:hover {
+            background-color: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        .copy-box-body {
+            padding: 1rem;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #a6accd;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .suggestion-box {
+            background: linear-gradient(135deg, #121824 0%, #172237 100%);
+            border: 1px solid #2a3c5e;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 5rem;
+        }
+
+        .suggestion-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestion-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .suggestion-item {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: rgba(0, 245, 212, 0.05);
+            border-color: var(--accent-cyan);
+        }
+
+        .suggestion-prompt {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .suggestion-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="registry-tag">[Artifacts Index // Automated Registry]</span>
+        <h1>Sovereign Armory // Meta-Orchestrator Ledger</h1>
+        <div class="subtitle">A project-agnostic cognitive flight recorder mapping structural multi-agent topologies, strategic execution pivots, and systemic behavioral architectures.</div>
+    </header>
+
+    <nav class="nav-tabs">
+        <a href="#topology" class="tab">01. Alternative Topologies</a>
+        <a href="#why-ledger" class="tab">02. The Deep "Why" Ledger</a>
+        <a href="#spec-file" class="tab">03. Master Goal Spec</a>
+        <a href="#gatekeeper" class="tab">04. Hardware Gatekeeper</a>
+        <a href="#guided-learning" class="tab">05. Horizon Prompts</a>
+    </nav>
+
+    <section id="topology">
+        <h2>01 // The Architectural Arena: Alternative Topologies</h2>
+        <p>To understand why this architecture was chosen, we must map out the alternative Multi-Agent design patterns evaluated, stress-tested, and discarded during core layout verification cycles.</p>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>Pattern A: Programmatic Wrapper <span class="badge failed">Discarded</span></h3>
+                <p>A rigid, deterministic script or Python daemon executing string parsing (regex) on workspace files, triggering execution hooks sequentially based on hardcoded line rules.</p>
+                <div class="why-block">
+                    <div class="why-title">Failure Vector</div>
+                    Extreme structural brittleness. Attempting to enforce programmatic certainty on non-deterministic AI outputs creates an architectural trap. If a downstream LLM updates its syntax structure, text matches break completely.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Pattern B: Homogeneous Mirroring <span class="badge failed">Discarded</span></h3>
+                <p>Spawning an instance of a stateful task runner (like iteratr) to oversee a child subdirectory running an identical instance of the same task engine framework loop.</p>
+                <div class="why-block">
+                    <div class="why-title">Failure Vector</div>
+                    Split-brain state collisions. Stateful task systems compile graphs into persistent database event meshes on boot. Modifying a running specification checklist mid-flight forces disk states to drift from memory queues, causing index locks.
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-color: var(--accent-cyan); background-color: rgba(0, 245, 212, 0.01);">
+            <h3>Chosen Pattern: Hierarchical Supervisor <span class="badge chosen">Sovereign Target</span></h3>
+            <p>A fluid, context-driven Reasoning Engine (Antigravity/agy) holding macro-goals purely in its active memory window, commanding an isolated, stateless child subdirectory via an out-of-band hardware communication gate.</p>
+            <div class="why-block" style="border-left-color: var(--accent-cyan); background-color: rgba(0, 245, 212, 0.03);">
+                <div class="why-title" style="color: var(--accent-cyan);">Systemic Rationale</div>
+                Total isolation of concerns. The supervisor's timeline progress lives as semantic logic in active context rather than a rigid database schema. It can break tasks into dynamic sub-steps, execute diagnostics, and manipulate the child sandbox without risking state machine corruptions.
+            </div>
+        </div>
+    </section>
+
+    <section id="why-ledger">
+        <h2>02 // The Deep "Why" Ledger: Strategic Architectural Pivots</h2>
+        <p>This panel captures the "Edison Logbook"—the precise architectural reasoning behind the structural choices making up this runtime framework, preserving meta-cognition for future iterations.</p>
+        
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 1: From Numeric Compliance Scores to Uncompromising Binary Gates</h4>
+            <p><strong>The Legacy Approach:</strong> The critic agent reads written code and outputs a volatile percentage rating (e.g., 85/100), branching steps based on a sliding numerical threshold.</p>
+            <div class="why-block">
+                <div class="why-title">The Rationale For Abandonment</div>
+                Numeric grading introduces an ambiguous algorithmic gray zone. An LLM scoring code at 94/100 leaves the supervisor guessing which specific 6% failed, and whether the defects are structural or superficial. Shifting to an explicit <strong>PASS/FAIL</strong> binary gate forces absolute technical accountability. The critic acts as an uncompromising adversary—if a single stub or unhandled route is identified, it drops an automatic failure.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 2: From Task-List Mutation Diffs to Clean Remediation Cascades</h4>
+            <p><strong>The Legacy Approach:</strong> When a build pass fails verification, the supervisor attempts to inject checkboxes or edit task blocks directly inside the running project's tracking documents.</p>
+            <div class="why-block">
+                <div class="why-title">The Rationale For Abandonment</div>
+                Hacking live specification files behind the back of an active stateful compiler engine shatters the integrity of the data layer. It forces local files to drift from underlying database caches, causing severe syncing mutations. The corrected strategy implements a <strong>Multi-Spec Cascade</strong>: the supervisor treats the inner tool as a pure black box, outputting completely clean, standalone remediation specs every cycle.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 3: From Active Status Polling to Kernel-Level OS Locks (inotifywait)</h4>
+            <p><strong>The Legacy Approach:</strong> The supervisor triggers the child builder process in the background and continuously makes repetitive API tool turns every few seconds to poll file modifications.</p>
+            <div class="why-block">
+                <div class="why-title">The Rationale For Abandonment</div>
+                Financial and context exhaustion. Quizzing a multi-billion parameter reasoning model to repeatedly execute loop assertions during a 15-minute software build pass consumes thousands of unnecessary API tokens and litters the context window with junk telemetry. Utilizing <code>inotifywait</code> blocks the running thread at the Linux kernel level, yielding execution completely until tripped for zero tokens.
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 style="color: #ffffff; margin-bottom: 0.5rem;">Pivot 4: The Ephemeral, Context-Blind Critic Gate</h4>
+            <p><strong>The Legacy Approach:</strong> The parent supervisor engine acts as its own auditor, evaluating the child subdirectory directly within its long-running session context.</p>
+            <div class="why-block">
+                <div class="why-title">The Rationale For Abandonment</div>
+                Implicit cognitive bias loop. An agent that has been guiding an execution path across multiple loops develops an internal motivation to bypass minor errors so it can advance its overall goal list. Launching a separate, single-shot, non-interactive shell block for the audit ensures the critic holds zero historical memory, evaluating code with absolute neutrality.
+            </div>
+        </div>
+    </section>
+
+    <section id="spec-file">
+        <h2>03 // The Reusable Sovereign Master Specification</h2>
+        <p>This artifact represents the complete, project-agnostic instructions configured for the parent supervisor execution engine. It maps directory boundaries, branching workflows, and error limits.</p>
+        
+        <div class="copy-box-container">
+            <div class="copy-box-header">
+                <span class="copy-box-title">FILEPATH: supervisor_goal.md</span>
+                <button class="copy-box-btn" onclick="copyCode('code-goal')">Copy Content</button>
+            </div>
+            <div class="copy-box-body">
+<pre id="code-goal"># Project-Agnostic Meta-Orchestrator Specification (Lean Edition)
+
+## 1. Directory Scaffolding & Component Mapping
+The architecture enforces a strict nested hierarchy separating the macro-governor (parent directory) from the isolated code-generation environment (child directory).
+
+===============================================================================
+GOVERNANCE WORKING DIRECTORY (.)
+├── supervisor_goal.md         &lt;-- This active master operational specification
+├── monitor.sh                  &lt;-- Cost-free background hardware telemetry script
+├── monitor.status              &lt;-- Hardware status communication signal gate
+├── child.pid                   &lt;-- Background process identifier tracking file
+├── state.json                  &lt;-- Supervisor memory core (Pipeline state cache)
+├── future_phases/              &lt;-- Pool of upcoming requirement files (*.md)
+├── specs/                      &lt;-- Active orchestration directory
+│   ├── completed/              &lt;-- Vault for clean, passing phase specifications
+│   └── current_phase.md        &lt;-- Copied target phase under active execution
+└── project/                    &lt;-- TARGET EXECUTION SUBDIRECTORY (./project)
+    ├── config.yaml             &lt;-- Local 'iteratr' engine runtime settings
+    ├── opencode.json           &lt;-- Open Code environment setting parameters
+    └── .iteratr/               &lt;-- Inner worker's session database arrays
+===============================================================================
+
+## 2. Core 'iteratr' & Environment Principles
+- **Black-Box Principle**: Treat the inner loop engine as an opaque, stateful actor. Never directly edit, modify, or append strings to files that `iteratr` is actively processing.
+- **Behavior Controls**: Global execution behaviors are strictly governed by `project/config.yaml` and `project/opencode.json`.
+- **Headless Calling Syntax**: Invoke the headless inner loop engine strictly by targeting the current phase specification with the explicit input flag: `iteratr build -s ../specs/current_phase.md --headless`
+
+## 3. Automated State-Machine Loop Protocols
+Execute the following steps continuously across all files stored inside `./future_phases/` until the pipeline pool is entirely exhausted:
+
+### Step 3.1: State Initialization & Crash Recovery Check
+1. Read `./state.json` to check for an existing execution checkpoint. 
+   - If an active phase is recorded, resume directly at **Step 3.2** using that file to recover from a previous system crash.
+   - If no checkpoint exists, locate the next file in `./future_phases/`, copy it to `./specs/current_phase.md`, and update `./state.json` with the new active target metadata.
+
+### Step 3.2: Asynchronous Background Deployment & Infinite Lock
+1. Launch the inner developer agent loop as a background daemon process inside the sub-folder context, piping standard outputs to a local capture stream:
+   ```bash
+   cd project && iteratr build -s ../specs/current_phase.md --headless &gt; ../child_exec.log 2&gt;&1 & echo $! &gt; ../child.pid
