@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Armory // Trash-Tier Omakase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0a0a0c',
+                        slate: '#1a1b1e',
+                        terminal: { blue: '#4ade80', amber: '#fbbf24', cyan: '#22d3ee', red: '#f87171' }
+                    },
+                    fontFamily: {
+                        mono: ['"Fira Code"', '"JetBrains Mono"', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0a0a0c; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Fira Code', monospace; }
+        pre { background-color: #1a1b1e; border: 1px solid #2d3748; }
+        .copy-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="antialiased leading-relaxed min-h-screen pb-24">
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-50 bg-obsidian/90 backdrop-blur border-b border-gray-800 p-4 shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-wrap gap-4 items-center justify-between text-sm font-mono text-terminal-cyan">
+            <div class="font-bold tracking-wider text-white">SOVEREIGN_ARMORY<span class="text-terminal-amber">.v1</span></div>
+            <div class="flex gap-6">
+                <a href="#manifesto" class="hover:text-white transition">01. Manifesto</a>
+                <a href="#mechanics" class="hover:text-white transition">02. Mechanics</a>
+                <a href="#configs" class="hover:text-white transition">03. Configs</a>
+                <a href="#prompts" class="hover:text-white transition">04. Prompts</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto mt-12 px-6 space-y-24">
+
+        <!-- HEADER -->
+        <header class="space-y-4 border-l-4 border-terminal-amber pl-6 py-2">
+            <h1 class="text-4xl font-bold text-white uppercase tracking-tight">Trash-Tier Omakase</h1>
+            <p class="text-xl text-gray-400 font-mono">Bare-metal host. Ephemeral agent harnesses. Absolute sovereign execution.</p>
+        </header>
+
+        <!-- SECTION 1: THE WHY -->
+        <section id="manifesto" class="space-y-8">
+            <h2 class="text-2xl text-terminal-blue border-b border-gray-800 pb-2">01 // The Philosophy: Fearless Ephemerality</h2>
+            <div class="prose prose-invert max-w-none text-gray-300 space-y-4">
+                <p><strong>The Problem:</strong> The current state of the art demands premium hardware for agent-driven development. Heavy MacOS instances, bloated runtimes, and local environments that degrade over time as autonomous agents experiment, download dependencies, and inevitably trash the system.</p>
+                <p><strong>The Solution:</strong> Project lifecycle versus permanence. This stack treats developer environments as disposable. By isolating everything inside rootless Podman containers on a bare-metal Void Musl host, we achieve <em>fearless execution</em>. If an Open Code or AntiGravity agent goes rogue or breaks the dependency tree, it doesn't matter. You either restore from a Checkpoint/Restore In Userspace (CRIU) snapshot, or nuke the container and rebuild it from the <code>Containerfile</code> in seconds.</p>
+                <p>You don't need a $2,000 laptop. You can run this on a potato. The host does nothing but provide a kernel and a display. The containers do all the heavy lifting.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MECHANICS -->
+        <section id="mechanics" class="space-y-8">
+            <h2 class="text-2xl text-terminal-cyan border-b border-gray-800 pb-2">02 // Architecture & State Mechanics</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate p-6 rounded-lg border border-gray-800">
+                    <h3 class="text-lg text-white mb-2">The Host Layer</h3>
+                    <p class="text-sm text-gray-400"><strong>Void Linux + Musl + i3:</strong> Near-zero overhead. The host runs no daemons, no heavy standard libraries, and no bloat. It exists solely to pass compute power to the container layer.</p>
+                </div>
+                <div class="bg-slate p-6 rounded-lg border border-gray-800">
+                    <h3 class="text-lg text-white mb-2">The Glibc Execution Layer</h3>
+                    <p class="text-sm text-gray-400"><strong>Rootless Podman:</strong> Full Void Glibc containers acting as an "App Store." VS Code, Python/uv, Node/pnpm, PHP, and C/C++ toolchains run in isolated, daemonless environments without fighting host library incompatibilities.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate p-6 rounded-lg border border-gray-800 space-y-4">
+                <h3 class="text-lg text-terminal-amber">Shared Storage & Hibernation</h3>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+                    <li><strong>Universal Bindings:</strong> A central <code>/workspace</code> directory mounted across all containers. Agents and IDEs read/write the same code with zero sync lag.</li>
+                    <li><strong>Content-Addressable Caches:</strong> Global volumes for <code>uv</code> and <code>pnpm</code> prevent duplicate dependency downloads across ephemeral containers.</li>
+                    <li><strong>CRIU Checkpointing:</strong> Freeze active containers, dump RAM to disk, and resume later. <span class="text-terminal-red">Warning:</span> Headless agents hibernate flawlessly, but X11 graphical tools (VS Code) will drop socket connections. Perform a clean workspace shutdown for IDE containers before checkpointing.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CONFIGURATIONS -->
+        <section id="configs" class="space-y-8">
+            <h2 class="text-2xl text-terminal-blue border-b border-gray-800 pb-2">03 // Production Code Blocks</h2>
+
+            <!-- Config Block -->
+            <div class="relative group">
+                <h4 class="text-sm font-bold text-gray-400 mb-2">config.sh <span class="font-normal text-xs ml-2 text-gray-500">(Declarative Pathing)</span></h4>
+                <button class="copy-btn absolute top-8 right-2 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+<pre class="p-4 rounded-lg overflow-x-auto text-sm text-gray-300 font-mono"><code>#!/bin/sh
+# System-wide declarative definitions. Native sourcing, no YAML overhead.
+export HOST_WORKSPACE="/home/travis/workspace"
+export CONTAINER_RUNTIME="podman"
+export GLOBAL_CACHE_DIR="/home/travis/.cache/global"
+export TARGET_ARCH=$(uname -m)
+
+# GUI flags for X11 forwarding
+export ENABLE_GUI_SOCKETS=true
+</code></pre>
+            </div>
+
+            <!-- Boot Block -->
+            <div class="relative group">
+                <h4 class="text-sm font-bold text-gray-400 mb-2">boot.sh <span class="font-normal text-xs ml-2 text-gray-500">(Zero-Dependency Provisioner)</span></h4>
+                <button class="copy-btn absolute top-8 right-2 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+<pre class="p-4 rounded-lg overflow-x-auto text-sm text-gray-300 font-mono"><code>#!/bin/sh
+source ./config.sh
+
+echo "[*] Injecting xbps non-free repositories..."
+sudo xbps-install -Su void-repo-nonfree
+
+echo "[*] Configuring systemd-timesyncd / chrony alternative..."
+sudo xbps-install -y chrony
+sudo ln -s /etc/sv/chronyd /var/service/
+
+echo "[*] Scaffolding workspace and caches..."
+mkdir -p "$HOST_WORKSPACE" "$GLOBAL_CACHE_DIR/uv" "$GLOBAL_CACHE_DIR/pnpm"
+chmod 777 "$HOST_WORKSPACE" # Fast local dev mapping
+
+echo "[*] Host provisioned. Ready for container orchestration."
+</code></pre>
+            </div>
+
+            <!-- Containerfile -->
+            <div class="relative group">
+                <h4 class="text-sm font-bold text-gray-400 mb-2">Containerfile <span class="font-normal text-xs ml-2 text-gray-500">(Void Glibc Base)</span></h4>
+                <button class="copy-btn absolute top-8 right-2 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+<pre class="p-4 rounded-lg overflow-x-auto text-sm text-gray-300 font-mono"><code>FROM voidlinux/voidlinux-glibc:latest
+
+# Inject core toolchains
+RUN xbps-install -Syu && \
+    xbps-install -y base-devel python3 nodejs php git curl xauth
+
+# Create non-root developer identity
+RUN useradd -m -s /bin/bash devuser
+USER devuser
+WORKDIR /workspace
+
+# Set environments for global cache mapping
+ENV UV_CACHE_DIR=/global-cache/uv
+ENV PNPM_HOME=/global-cache/pnpm
+ENV PATH="$PNPM_HOME:$PATH"
+
+CMD ["/bin/bash"]
+</code></pre>
+            </div>
+
+            <!-- Compose -->
+            <div class="relative group">
+                <h4 class="text-sm font-bold text-gray-400 mb-2">compose.yaml <span class="font-normal text-xs ml-2 text-gray-500">(Orchestration & X11)</span></h4>
+                <button class="copy-btn absolute top-8 right-2 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+<pre class="p-4 rounded-lg overflow-x-auto text-sm text-gray-300 font-mono"><code>version: '3.8'
+services:
+  agent-harness:
+    build: 
+      context: .
+      dockerfile: Containerfile
+    volumes:
+      - ${HOST_WORKSPACE}:/workspace:z
+      - ${GLOBAL_CACHE_DIR}:/global-cache:z
+    security_opt:
+      - seccomp=unconfined # Required for certain agent sandboxing
+
+  ide-gui:
+    image: my-vscode-glibc:latest
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ${HOST_WORKSPACE}:/workspace:z
+    network_mode: host
+</code></pre>
+            </div>
+            
+            <!-- CRIU Commands -->
+            <div class="relative group">
+                <h4 class="text-sm font-bold text-gray-400 mb-2">Hibernation Executables <span class="font-normal text-xs ml-2 text-gray-500">(Terminal Snippets)</span></h4>
+                <button class="copy-btn absolute top-8 right-2 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+<pre class="p-4 rounded-lg overflow-x-auto text-sm text-gray-300 font-mono"><code># Dump agent context to disk and kill container
+podman container checkpoint agent-harness --export=/workspace/backups/agent-snap.tar.gz
+
+# Restore agent context into active RAM
+podman container restore --import=/workspace/backups/agent-snap.tar.gz
+</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PROMPTS -->
+        <section id="prompts" class="space-y-8">
+            <h2 class="text-2xl text-terminal-amber border-b border-gray-800 pb-2">04 // LLM Prompt Engineering Frameworks</h2>
+            <p class="text-sm text-gray-400">Context jumpstarts for deep research and agent orchestration. Edit to fit the exact technical hurdle you are facing.</p>
+
+            <div class="space-y-6">
+                <!-- Prompts A, B, C -->
+                <div class="bg-obsidian border border-gray-800 p-4 rounded-lg relative group">
+                    <h3 class="text-terminal-cyan font-bold mb-2">Prompt A: Deep Research — Low-Level Networking</h3>
+                    <button class="copy-btn absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+                    <p class="font-mono text-sm text-gray-300">"Perform a comprehensive audit of low-level kernel transitions when migrating traditional system configuration scripts to modern systemd-networkd state machines in Debian Trixie. Focus specifically on how legacy ioctl calls are deprecated in favor of Netlink sockets, and detail any specific race conditions that occur during rapid container teardowns."</p>
+                </div>
+
+                <div class="bg-obsidian border border-gray-800 p-4 rounded-lg relative group">
+                    <h3 class="text-terminal-cyan font-bold mb-2">Prompt B: Deep Research — CRIU State Dumps</h3>
+                    <button class="copy-btn absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+                    <p class="font-mono text-sm text-gray-300">"Investigate and map the memory paging behaviors, file descriptor serialization, and socket tracking mechanisms inside the Linux CRIU framework during an active container dump. Specifically, output a technical report on how CRIU handles dropping X11 socket connections versus headless background processes mapped to mounted host volumes."</p>
+                </div>
+
+                <div class="bg-obsidian border border-gray-800 p-4 rounded-lg relative group">
+                    <h3 class="text-terminal-cyan font-bold mb-2">Prompt C: Deep Research — C/C++ Binary Linking</h3>
+                    <button class="copy-btn absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+                    <p class="font-mono text-sm text-gray-300">"Evaluate the exact compilation flag disparities, memory layout variations, and binary compatibility fault lines when linking shared objects between a Void Musl host and a Void Glibc container. Provide GCC and Clang flag overrides needed to safely compile a native tool in the glibc container for explicit static deployment on the musl host."</p>
+                </div>
+
+                <!-- Prompts D, E -->
+                <div class="bg-obsidian border border-terminal-amber p-4 rounded-lg relative group mt-8">
+                    <h3 class="text-terminal-amber font-bold mb-2">Prompt D: Agent Bootstrap — The Architect</h3>
+                    <button class="copy-btn absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+                    <p class="font-mono text-sm text-gray-300">"You are an autonomous architecture agent. Your strict operational parameter is safety. Read the attached config.sh profile. Write highly modular, idempotent provisioning shell scripts that establish my container workspace. You must verify that your scripts will not break active host mount tables or overwrite existing symlinks. Outline your execution plan before writing any code."</p>
+                </div>
+
+                <div class="bg-obsidian border border-terminal-amber p-4 rounded-lg relative group">
+                    <h3 class="text-terminal-amber font-bold mb-2">Prompt E: Agent Bootstrap — The Sandbox Warden</h3>
+                    <button class="copy-btn absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-1 rounded transition" onclick="copyCode(this)">Copy</button>
+                    <p class="font-mono text-sm text-gray-300">"You are operating within an ephemeral podman harness. Execute your local development loops and write code for this project. Rule 1: Manage your dependency locks (PHP/Composer, Python/uv, Node/pnpm) entirely within this container boundary. Rule 2: If you detect a self-correcting logic spiral or dependency conflict, halt execution immediately, dump a traceback to workspace/crash.log, and await human intervention to prevent CPU exhaustion."</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function copyCode(btn) {
+            const container = btn.parentElement;
+            // Target either a <pre> block or a <p> tag within the container
+            const codeBlock = container.querySelector('pre') || container.querySelector('p');
+            if (codeBlock) {
+                const textToCopy = codeBlock.innerText;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Copied!';
+                    btn.classList.add('bg-terminal-blue', 'text-obsidian');
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.classList.remove('bg-terminal-blue', 'text-obsidian');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
