@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cognitive OS // Master Engineering Specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --bg: #080b12;
+    --bg-card: #0e1220;
+    --bg-card-2: #121828;
+    --violet: #7c3aed;
+    --violet-soft: #a78bfa;
+    --violet-dim: rgba(124,58,237,0.15);
+    --teal: #0d9488;
+    --teal-soft: #5eead4;
+    --teal-dim: rgba(13,148,136,0.12);
+    --amber: #d97706;
+    --amber-soft: #fcd34d;
+    --amber-dim: rgba(217,119,6,0.12);
+    --text: #f0eee8;
+    --text-muted: #8892a4;
+    --text-dim: #4a5568;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.1);
+    --glow-v: 0 0 40px rgba(124,58,237,0.3);
+    --glow-t: 0 0 40px rgba(13,148,136,0.3);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 6vw;
+    overflow: hidden;
+  }
+
+  #hero-canvas {
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-soft);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title span {
+    background: linear-gradient(135deg, var(--violet-soft), var(--teal-soft));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 560px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border-strong);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted);
+  }
+
+  .hero-badge.active {
+    border-color: var(--teal);
+    color: var(--teal-soft);
+    background: var(--teal-dim);
+  }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 2;
+    animation: fadeUpDown 2s ease-in-out infinite;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--violet));
+  }
+
+  @keyframes fadeUpDown {
+    0%, 100% { opacity: 0.3; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 0.8; transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── NAV ── */
+  #nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,11,18,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 6vw;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 56px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text);
+    white-space: nowrap;
+    margin-right: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-logo span { color: var(--violet-soft); }
+
+  .nav-link {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 0 1rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: var(--teal-soft);
+    border-bottom-color: var(--teal);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 0 6vw; }
+
+  /* ── SECTION ── */
+  .spec-section {
+    padding: 6rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-number {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--violet-soft);
+    padding-top: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  /* ── SUBSECTION ── */
+  .subsection {
+    margin-bottom: 3rem;
+  }
+
+  .subsection-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--teal-soft);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .subsection-title::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 1.1rem;
+    background: var(--teal);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-glow-v {
+    border-color: rgba(124,58,237,0.2);
+    background: linear-gradient(135deg, var(--bg-card), rgba(124,58,237,0.05));
+  }
+
+  .card-glow-t {
+    border-color: rgba(13,148,136,0.2);
+    background: linear-gradient(135deg, var(--bg-card), rgba(13,148,136,0.05));
+  }
+
+  .card-glow-a {
+    border-color: rgba(217,119,6,0.2);
+    background: linear-gradient(135deg, var(--bg-card), rgba(217,119,6,0.05));
+  }
+
+  .card-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--violet-soft);
+    margin-bottom: 0.6rem;
+  }
+
+  .card-title.teal { color: var(--teal-soft); }
+  .card-title.amber { color: var(--amber-soft); }
+
+  .card p {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── PILLAR GRID ── */
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .pillar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .pillar-card:hover {
+    border-color: rgba(124,58,237,0.35);
+    transform: translateY(-2px);
+  }
+
+  .pillar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--teal));
+  }
+
+  .pillar-num {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--violet-dim);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--violet-soft), transparent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .pillar-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .pillar-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── NETWORK TRIAD ── */
+  .triad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .triad-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .triad-dmn { border-top: 3px solid var(--violet); }
+  .triad-sn  { border-top: 3px solid var(--teal); }
+  .triad-cen { border-top: 3px solid var(--amber); }
+
+  .triad-label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .triad-dmn .triad-label { color: var(--violet-soft); }
+  .triad-sn .triad-label  { color: var(--teal-soft); }
+  .triad-cen .triad-label { color: var(--amber-soft); }
+
+  .triad-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .triad-card p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 0.7rem;
+  }
+
+  /* ── EXPLAINER ── */
+  .explainer {
+    margin: 1.5rem 0;
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .explainer-toggle {
+    width: 100%;
+    background: rgba(124,58,237,0.06);
+    border: none;
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    text-align: left;
+    color: var(--violet-soft);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    transition: background 0.2s;
+  }
+
+  .explainer-toggle:hover { background: rgba(124,58,237,0.1); }
+
+  .explainer-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--violet);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+
+  .explainer.open .explainer-icon { transform: rotate(45deg); }
+
+  .explainer-body {
+    display: none;
+    padding: 1.2rem 1.4rem;
+    background: rgba(8,11,18,0.6);
+    border-top: 1px solid rgba(124,58,237,0.1);
+  }
+
+  .explainer.open .explainer-body { display: block; }
+
+  .explainer-body p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 0.8rem;
+  }
+
+  .explainer-body p:last-child { margin-bottom: 0; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    position: relative;
+    background: #070a10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin: 1rem 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .copy-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 0.25rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.03em;
+  }
+
+  .copy-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+  .copy-btn.copied { color: var(--teal-soft); border-color: var(--teal); }
+
+  .code-content {
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+  }
+
+  .code-content pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #c9d1d9;
+    white-space: pre;
+  }
+
+  .code-content .kw { color: var(--violet-soft); }
+  .code-content .str { color: var(--teal-soft); }
+  .code-content .cm { color: var(--text-dim); font-style: italic; }
+  .code-content .prop { color: var(--amber-soft); }
+
+  /* ── PROMPT CARDS ── */
+  .prompts-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .prompts-label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+  }
+
+  .prompt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .prompt-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: border-color 0.2s;
+  }
+
+  .prompt-card:hover { border-color: rgba(124,58,237,0.3); }
+
+  .prompt-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .prompt-copy {
+    align-self: flex-end;
+    background: none;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--violet-soft);
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 0.2rem 0.65rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .prompt-copy:hover { background: var(--violet-dim); }
+  .prompt-copy.copied { color: var(--teal-soft); border-color: var(--teal); }
+
+  /* ── STAT CALLOUT ── */
+  .stat-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+  }
+
+  .stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.2rem 1.5rem;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--violet-soft), var(--teal-soft));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── METADATA TABLE ── */
+  .meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.87rem;
+  }
+
+  .meta-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .meta-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .meta-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--teal-soft);
+    white-space: nowrap;
+  }
+
+  .meta-table tr:last-child td { border-bottom: none; }
+
+  /* ── SIGNAL METER ── */
+  .signal-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 1rem 0;
+  }
+
+  .signal-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .signal-name {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .signal-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .signal-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--teal));
+    transition: width 1s ease;
+  }
+
+  .signal-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* ── INLINE TAG ── */
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tag-v { background: var(--violet-dim); color: var(--violet-soft); border: 1px solid rgba(124,58,237,0.25); }
+  .tag-t { background: var(--teal-dim); color: var(--teal-soft); border: 1px solid rgba(13,148,136,0.25); }
+  .tag-a { background: var(--amber-dim); color: var(--amber-soft); border: 1px solid rgba(217,119,6,0.25); }
+
+  /* ── CONTENT PROSE ── */
+  .prose p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+
+  .prose strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .prose em { color: var(--teal-soft); font-style: normal; font-weight: 500; }
+
+  .prose ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .prose ul li {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: 0.93rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .prose ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--violet-soft);
+    font-weight: 300;
+  }
+
+  /* ── SECTION VIII SPECIAL ── */
+  .signal-matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .signal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.2rem;
+    transition: border-color 0.2s;
+  }
+
+  .signal-card:hover { border-color: rgba(13,148,136,0.3); }
+
+  .signal-card-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .signal-card-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--teal-soft);
+    margin-bottom: 0.4rem;
+  }
+
+  .signal-card-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ── OODA DIAGRAM ── */
+  .ooda-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .ooda-node {
+    flex: 1;
+    min-width: 100px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .ooda-node.highlighted {
+    border-color: var(--violet);
+    background: var(--violet-dim);
+    box-shadow: var(--glow-v);
+  }
+
+  .ooda-letter {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--text-dim);
+    margin-bottom: 0.2rem;
+  }
+
+  .ooda-node.highlighted .ooda-letter { color: var(--violet-soft); }
+
+  .ooda-word {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .ooda-node.highlighted .ooda-word { color: var(--violet-soft); }
+
+  .ooda-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 6vw;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 1rem;
+  }
+
+  .footer-brand {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  .footer-brand span { color: var(--violet-soft); }
+
+  .footer-note {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    max-width: 400px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .section-header { grid-template-columns: 1fr; gap: 0.5rem; }
+    .ooda-flow { gap: 0.3rem; }
+    .ooda-node { min-width: 70px; padding: 0.7rem 0.5rem; }
+    .ooda-letter { font-size: 1.2rem; }
+    footer { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    #hero-canvas { display: none; }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+    margin: 2rem 0;
+  }
+
+  /* ── HIGHLIGHT QUOTE ── */
+  .callout {
+    border-left: 3px solid var(--violet);
+    padding: 0.8rem 1.2rem;
+    background: var(--violet-dim);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 1.5rem 0;
+  }
+
+  .callout.teal { border-color: var(--teal); background: var(--teal-dim); }
+  .callout.amber { border-color: var(--amber); background: var(--amber-dim); }
+
+  .callout p {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .callout strong { color: var(--text); font-style: normal; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-eyebrow">Master Engineering Specification &nbsp;·&nbsp; Rev. 2026</div>
+  <h1 class="hero-title">Cognitive<br><span>Operating System</span></h1>
+  <p class="hero-sub">An AI-centric knowledge substrate engineered for non-deterministic model agents — not human browsers. Dense, atomic, traversable, and sovereign.</p>
+  <div class="hero-meta">
+    <span class="hero-badge active">8 Specification Sections</span>
+    <span class="hero-badge">HelixDB / Rust Core</span>
+    <span class="hero-badge">Android-Native Deployment</span>
+    <span class="hero-badge">Local Sovereignty</span>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">COG<span>OS</span></div>
+    <a href="#s1" class="nav-link">I. Token Economics</a>
+    <a href="#s2" class="nav-link">II. Intake Matrix</a>
+    <a href="#s3" class="nav-link">III. Neural Triad</a>
+    <a href="#s4" class="nav-link">IV. Graph Dynamics</a>
+    <a href="#s5" class="nav-link">V. Parallelism</a>
+    <a href="#s6" class="nav-link">VI. Graph Surgeon</a>
+    <a href="#s7" class="nav-link">VII. HelixDB</a>
+    <a href="#s8" class="nav-link">VIII. Signal Doctrine</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════ -->
+<main>
+
+<!-- ─── SECTION I ─── -->
+<section class="spec-section" id="s1">
+  <div class="section-header">
+    <div class="section-number">Section I</div>
+    <div>
+      <h2 class="section-title">The Foundational Inversion:<br>AI-Centric Ergonomics &amp; Token Economics</h2>
+      <p class="section-subtitle">Rethinking who the knowledge substrate is actually built for.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. The Structural Ergonomic Divide</h3>
+    <div class="prose">
+      <p><strong>The Demise of Human Ergonomics:</strong> Legacy knowledge management frameworks — PARA, folder hierarchies, tag taxonomies, and visual graph displays like Obsidian — are optimized exclusively for human visual comfort and cognitive limitations. They maximize a user's ability to <em>browse</em> information manually.</p>
+      <p><strong>The Write-Only Substrate Realization:</strong> In the AI era, human browsing is an anti-pattern. The true consumer of the knowledge substrate is a non-deterministic model agent. A modern second brain must function as a dense, structured, write-only data layer optimized for automated query parsing, context slicing, and programmatic traversal out-of-band.</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-value">9,000</div>
+        <div class="stat-label">Token burn — catch-all doc</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">600</div>
+        <div class="stat-label">Token run — atomic slice</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">15×</div>
+        <div class="stat-label">Efficiency multiplier</div>
+      </div>
+    </div>
+
+    <div class="card card-glow-v">
+      <div class="card-title">The 15× Token Optimization Mechanics</div>
+      <p><strong>The Catch-All Document Trap:</strong> Storing complex technical records, conversational exchanges, or design notes inside large, multi-topic catch-all documents breaks model focus. To extract a single historical decision, an LLM must ingest the entire document history, leading to quadratic token consumption and massive exposure to attention dilution and context hallucinations.</p>
+    </div>
+    <div class="card card-glow-t">
+      <div class="card-title teal">The Atomic Context Slice</div>
+      <p>Breaking files down into isolated, single-concept fragments restricts the model's retrieval window to the absolute minimum necessary information payload. The agent loads exactly what it requires and nothing else, dropping the operational transaction footprint down to a high-speed, high-precision 600-token run.</p>
+    </div>
+
+    <div class="explainer">
+      <button class="explainer-toggle" onclick="toggleExplainer(this)">
+        <span class="explainer-icon">+</span>
+        Explainer — Why LLMs break on large documents
+      </button>
+      <div class="explainer-body">
+        <p>Think of a language model's attention mechanism like a spotlight on a stage. A small, well-lit scene with one actor is easy to parse. Now fill the stage with 200 actors, set decorations, and fog machines. The model's "spotlight" has a fixed aperture — it can only illuminate so much before the edges blur into noise.</p>
+        <p>When you force a model to retrieve one specific decision from a 9,000-token sprawl document, it pays attention to everything simultaneously. That "everything" introduces irrelevant signal — old decisions, tangential notes, corrected assumptions — that competes with the target fact. This is attention dilution, and it's the primary driver of context hallucinations in retrieval workflows.</p>
+        <p>The atomic slice principle solves this by pre-filtering at the storage layer rather than the inference layer. The model never sees the fog. It only ever steps onto a clean, single-actor stage.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. Andrew Warner's Five Pillars of the Infinite Brain Engine</h3>
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <div class="pillar-name">Atomic Compaction</div>
+        <div class="pillar-desc">Strict structural isolation of data nodes. Every individual memory node is restricted to a single, hyper-focused idea bounded between a hard floor and ceiling of 50–300 lines. When an idea expands past this envelope, it undergoes automated parsing and division into distinct modular parts.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <div class="pillar-name">Explicit Typed Links</div>
+        <div class="pillar-desc">Absolute elimination of generic, untyped hyperlinks. Every single relational edge written to the database must carry an explicit, system-readable semantic descriptor: <span class="tag tag-v">:DERIVED_FROM</span> <span class="tag tag-t">:MUTATES</span> <span class="tag tag-a">:CONTRADICTS</span></div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <div class="pillar-name">Structured Metadata Headers</div>
+        <div class="pillar-desc">Every node carries a standard, system-readable property matrix pinned to its top layer — namespace boundaries, exact creation/verification timestamps, model confidence ratings, and strict upstream resource dependency links.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">04</div>
+        <div class="pillar-name">Scope Retrieval Filters</div>
+        <div class="pillar-desc">Algorithmic isolation mechanisms built directly into the data query layers. These filters guarantee that search triggers pull only the minimal sufficient context subset required for the active generation pass.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">05</div>
+        <div class="pillar-name">Hierarchical Summary Indexing</div>
+        <div class="pillar-desc">High-level directory map blocks across separate knowledge domains. As the database scales into thousands of nodes, the system auto-compiles short structural summaries. Agents parse these top-level index nodes first to map their traversal strategies.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">C. The OODA Loop Orientation Layer &amp; Predictive Self-Auditing</h3>
+
+    <div class="ooda-flow">
+      <div class="ooda-node">
+        <div class="ooda-letter">O</div>
+        <div class="ooda-word">Observe</div>
+      </div>
+      <div class="ooda-arrow">→</div>
+      <div class="ooda-node highlighted">
+        <div class="ooda-letter">O</div>
+        <div class="ooda-word">Orient</div>
+      </div>
+      <div class="ooda-arrow">→</div>
+      <div class="ooda-node">
+        <div class="ooda-letter">D</div>
+        <div class="ooda-word">Decide</div>
+      </div>
+      <div class="ooda-arrow">→</div>
+      <div class="ooda-node">
+        <div class="ooda-letter">A</div>
+        <div class="ooda-word">Act</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>The Missing Vector of Machine Action:</strong> Current LLM agents are proficient at observing raw data inputs, deciding on clear programmatic rules, and executing tool actions. They consistently fail at <strong>Orientation</strong> — the deep foundational alignment of identity, system constraints, long-term technical values, and operational precedents. Without it, an agent executes rapid automated tools that are confidently incorrect. The Infinite Brain functions as the explicit, immutable <em>Orient</em> layer of the system.</p>
+    </div>
+
+    <div class="prose">
+      <p><strong>The Predictive Self-Auditing Loop:</strong> To prevent context drift and continuously score system competence, the engine enforces a strict scientific feedback loop. Before any execution layer applies an automated action or design patch, it is forced to write a localized, deterministic prediction of the intended systemic impact to the node's metadata. At a later scheduled cadence, an adversarial auditor compares the actual file results against the recorded prediction, calculating a running precision metric and updating the node's internal confidence weights.</p>
+    </div>
+
+    <div class="explainer">
+      <button class="explainer-toggle" onclick="toggleExplainer(this)">
+        <span class="explainer-icon">+</span>
+        Explainer — Why "Orient" is the missing link in agentic AI
+      </button>
+      <div class="explainer-body">
+        <p>Boyd designed OODA for fighter pilots making split-second decisions under incomplete information. The "Orient" phase is where worldview lives — not just "what am I seeing" but "what does this mean given everything I know about myself, my mission, and my history." It's the interpretive substrate that gives raw observation its meaning.</p>
+        <p>Most LLM agents skip this entirely. They observe a prompt, immediately pattern-match to a decision, and execute a tool call. There's no persistent layer encoding: "our coding style forbids TypeScript," "this client hates verbose responses," "we always use atomic commits." That contextual bedrock has to be re-injected from scratch in every session or it's lost.</p>
+        <p>The Cognitive OS is designed to be that persistent Orient layer. It doesn't just store facts — it stores the <em>interpretive framework</em> that gives facts operational meaning. This is why the metadata headers matter so much: they carry confidence weights, contradiction flags, and dependency links that let an agent reason about the <em>reliability</em> of a stored node, not just its content.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section I</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Map the exact failure modes that occur when an LLM agent lacks an Orient layer — with concrete examples from my existing agent workflows.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Map the exact failure modes that occur when an LLM agent lacks an Orient layer — with concrete examples from my existing agent workflows.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Design a concrete scoring rubric for the Predictive Self-Auditing Loop. What metrics does the adversarial auditor actually compute against node confidence weights?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design a concrete scoring rubric for the Predictive Self-Auditing Loop. What metrics does the adversarial auditor actually compute against node confidence weights?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Compare atomic compaction versus hierarchical summary indexing as primary retrieval strategies at 10K, 100K, and 1M node scales. Where does each break?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Compare atomic compaction versus hierarchical summary indexing as primary retrieval strategies at 10K, 100K, and 1M node scales. Where does each break?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">What is the theoretical minimum token budget for the full OODA loop pass — from node retrieval through Orient to action confirmation — given the 600-token atomic slice target?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'What is the theoretical minimum token budget for the full OODA loop pass — from node retrieval through Orient to action confirmation — given the 600-token atomic slice target?')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION II ─── -->
+<section class="spec-section" id="s2">
+  <div class="section-header">
+    <div class="section-number">Section II</div>
+    <div>
+      <h2 class="section-title">The Sensory-Enriched Intake &amp; File Disassembly Matrix</h2>
+      <p class="section-subtitle">Capturing the air to catch the lightning.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. The Philosophy of Ingestion Telemetry</h3>
+    <div class="callout teal">
+      <p><strong>Capturing the Air to Catch the Flash:</strong> Intellectual inspiration is non-linear and spontaneous. To capture a single spark of highly valuable cross-domain context — lightning in a bottle — the intake pipeline must accept capturing a massive volume of apparently superfluous, empty data: the surrounding air. We don't yet know what is signal and what is noise. We capture everything.</p>
+    </div>
+    <div class="prose">
+      <p><strong>Local Edge Processing Pipeline:</strong> The system bypasses cloud processing latency and transmission costs by running native, edge-optimized streaming audio translation models — Nvidia Nemotron Nano or compact Whisper variants — directly on the local device chip. Continuous stream-of-consciousness vocal inputs are converted locally into clean text structures for zero token cost, dumping directly into the primary ingestion queue.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. The Tri-Tier Environmental Telemetry Anchors</h3>
+    <div class="prose">
+      <p>Every local data capture chunk is automatically enriched with three distinct hardware-level sensory metadata blocks before it is transmitted to the graph backend:</p>
+    </div>
+    <div class="triad-grid">
+      <div class="triad-card triad-dmn">
+        <div class="triad-label">Anchor 01</div>
+        <div class="triad-name">Socio-Spatial Coords</div>
+        <p>Captures real-time GPS coordinates, exact spatial time-zoning, and historical localized weather conditions to anchor the note in a physical reality.</p>
+      </div>
+      <div class="triad-card triad-sn">
+        <div class="triad-label">Anchor 02</div>
+        <div class="triad-name">Acoustic Decibel Fingerprinting</div>
+        <p>Continuous background audio sampling that tracks ambient decibel levels and sound frequencies, algorithmically determining whether the user was in a silent room, a focused office, or a chaotic public street corner.</p>
+      </div>
+      <div class="triad-card triad-cen">
+        <div class="triad-label">Anchor 03</div>
+        <div class="triad-name">Application Focus Vectors</div>
+        <p>System-level interface state scraping. Using out-of-band system permissions, the app captures a text hash of what specific browser tabs, source code segments, terminal views, or reference documents were open on your active viewport right before ingestion was triggered.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">C. The Star-Burst Disassembly Hierarchy &amp; Address Mapping</h3>
+    <div class="prose">
+      <p><strong>The Transformation Loop:</strong> Ingested source files are never left as flat, monolithic assets. They undergo an immediate, multi-class star-burst decomposition to map their absolute data provenance.</p>
+      <p><strong>The Root Source Asset Node:</strong> The system instantiates a primary <span class="tag tag-v">(SourceAsset)</span> node. Its immutable properties include the original resource URI/URL, creation timestamp, and an absolute local string pointer targeting a compressed, timestamped, local filesystem snapshot at <code style="color:var(--teal-soft);font-family:'JetBrains Mono',monospace;font-size:0.85em">/snapshots/[UUID].md.gz</code>. This completely insulates the memory layer against external link rot and third-party data drift.</p>
+    </div>
+
+    <div class="card card-glow-v" style="margin-top:1.5rem">
+      <div class="card-title">Granular Spatial Addressing</div>
+      <p style="margin-bottom:1rem">The ingestion engine disassembles the raw text into distinct <span class="tag tag-v">(AtomicNode)</span> entities radiating outward from the parent source asset. Every child node is bound to the root asset by an immutable <span class="tag tag-v">[:DERIVED_FROM]</span> edge carrying precise structural coordinate properties:</p>
+    </div>
+
+    <table class="meta-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>source_asset_uuid</td>
+          <td><span class="tag tag-v">hash</span></td>
+          <td>Unique cryptographic hash link back to the primary source asset node.</td>
+        </tr>
+        <tr>
+          <td>source_file_path</td>
+          <td><span class="tag tag-t">string</span></td>
+          <td>Physical, local storage location of the raw compressed snapshot container on disk.</td>
+        </tr>
+        <tr>
+          <td>line_coordinate_range</td>
+          <td><span class="tag tag-a">int[2]</span></td>
+          <td>Exact starting and ending line indices defining where this conceptual chunk lived inside the raw parent document.</td>
+        </tr>
+        <tr>
+          <td>byte_offset_allocation</td>
+          <td><span class="tag tag-a">int[2]</span></td>
+          <td>Exact physical byte boundaries mapping the text fragment inside the compressed storage file.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">D. The Poly-Path Convergence Principle</h3>
+    <div class="prose">
+      <p><strong>Eradicating Identity Fragmentation:</strong> If separate ingested source files contain overlapping references to an identical system property or core definition, a naive database will create duplicate reference nodes, shattering the memory graph.</p>
+      <p><strong>Unified Concept Consolidation:</strong> The engine extracts these common denominators into a single, unified abstract <span class="tag tag-v">(Concept)</span> node. Both independent <span class="tag tag-v">(AtomicNode)</span> elements from separate files write direct <span class="tag tag-t">[:REFERENCES]</span> edges to this single conceptual anchor.</p>
+    </div>
+    <div class="callout">
+      <p><strong>The Redundancy Asset — "10 ways to grandma's house":</strong> An execution agent can trace its path to a core concept sequentially through a specific, line-indexed historical file path, or leap sideways across abstract semantic boundaries using vector coordinates — maximizing path redundancy and retrieval options without introducing data fragmentation.</p>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section II</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Design the exact Android NDK implementation for real-time Whisper streaming ingestion — specifically how to handle partial transcript buffering without losing boundary context between atomic nodes.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design the exact Android NDK implementation for real-time Whisper streaming ingestion — specifically how to handle partial transcript buffering without losing boundary context between atomic nodes.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">What's the minimum viable star-burst decomposition algorithm? Walk me through the heuristics for deciding where one AtomicNode ends and another begins during disassembly of a stream-of-consciousness voice dump.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'What\'s the minimum viable star-burst decomposition algorithm? Walk me through the heuristics for deciding where one AtomicNode ends and another begins during disassembly of a stream-of-consciousness voice dump.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">How do byte_offset_allocation and line_coordinate_range handle documents that are edited post-ingestion? Is there a delta-patching protocol that doesn't invalidate existing AtomicNode lineage?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'How do byte_offset_allocation and line_coordinate_range handle documents that are edited post-ingestion? Is there a delta-patching protocol that doesn\'t invalidate existing AtomicNode lineage?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Build a HelixQL query that traverses [:REFERENCES] edges backward from a Concept node to reconstruct all AtomicNode sources that contributed to its formation — sorted by ingestion timestamp.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Build a HelixQL query that traverses [:REFERENCES] edges backward from a Concept node to reconstruct all AtomicNode sources that contributed to its formation — sorted by ingestion timestamp.')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION III ─── -->
+<section class="spec-section" id="s3">
+  <div class="section-header">
+    <div class="section-number">Section III</div>
+    <div>
+      <h2 class="section-title">The Neurological Triad Architecture</h2>
+      <p class="section-subtitle">Three cognitive networks. One sovereign mind.</p>
+    </div>
+  </div>
+
+  <div class="triad-grid" style="margin-bottom:2.5rem">
+    <div class="triad-card triad-dmn">
+      <div class="triad-label">Network 1 — Default Mode Network</div>
+      <div class="triad-name">The Background Weaver</div>
+      <p><strong>The Ingestion Compactor Phase:</strong> A background thread that continuously monitors raw ingestion queues out-of-focus. It consumes messy, sensory-enriched text and telemetry chunks, strips layout noise, executes atomic disassembly splitting, and registers pristine child nodes and line-range metadata tags into the local database pages.</p>
+      <p><strong>The Daydreaming Random Graph Walk:</strong> When intake queues are clear, the DMN shifts into a boundless, associative daydreaming state. It shuffles the global node index, selects a random anchor point, and begins executing random path-walking algorithms across the database layer — continuously turning fragmented day-to-day logs into a dense, interconnected intellectual web.</p>
+    </div>
+    <div class="triad-card triad-sn">
+      <div class="triad-label">Network 2 — Salience Network</div>
+      <div class="triad-name">TinyML Interrupt Controller</div>
+      <p><strong>The Local TinyML MLP Classifier:</strong> Built entirely as a compact, non-LLM, small-parameter Multi-Layer Perceptron running natively on the device chip. It executes forward passes in microseconds for zero token cost. Taking real-time environmental telemetry (GPS, decibels, app-focus vectors, input token metrics) as raw float values, it calculates an absolute priority score between 0.0 and 1.0.</p>
+      <p><strong>The Immutability Lock Protocol:</strong> When a high-focus user query or scheduled task fires, the TinyML network registers a high-priority event, issues a native hardware <span class="tag tag-t">SIGSTOP</span> to pause all running DMN threads, and writes <span class="tag tag-t">LOCK_STATE=TRUE</span> to the core memory configuration cache.</p>
+    </div>
+    <div class="triad-card triad-cen">
+      <div class="triad-label">Network 3 — Central Execution Network</div>
+      <div class="triad-name">High-Focus Engine</div>
+      <p><strong>Task-Oriented Powerhouse:</strong> Woken up exclusively by an interrupt from the Salience Network, the CEN boots up highly capable models to execute intensive, deterministic operations, compile code modules, or resolve explicit diagnostic paths against the locked database snapshot.</p>
+      <p><strong>The Creative Inversion Loop:</strong> Instead of forcing you to open an application and search your notes, the CEN harvests the abstract cross-domain links woven by the DMN's background daydreaming loops and pipes them onto a live, scrolling, low-priority <em>Cognitive Ticker Marquee</em> integrated straight into your phone's screen layout layer.</p>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <button class="explainer-toggle" onclick="toggleExplainer(this)">
+      <span class="explainer-icon">+</span>
+      Explainer — Why a TinyML MLP instead of a rules engine or a full LLM
+    </button>
+    <div class="explainer-body">
+      <p>You're solving a real-time interrupt controller problem. The two obvious answers both fail: a rules-based if/else script can't dynamically balance context (it doesn't know you're in a loud bar with low battery doing a creative brainstorm vs. in a quiet office with full charge debugging a race condition). A full LLM eats 200–2000 tokens just to decide whether to pause a background thread — that's insane overhead for a scheduling decision.</p>
+      <p>A TinyML MLP (Multi-Layer Perceptron) with ~50K parameters occupies maybe 200KB on disk. Its forward pass takes under 1ms on any modern ARM SoC. You train it on labeled telemetry snapshots: ambient db level, GPS cluster, active app class, battery level, current network token throughput — mapped to an interrupt priority float between 0.0 and 1.0. It learns your patterns. It doesn't need to be explained the rules; it watches you and infers them.</p>
+      <p>The real insight here is separating the scheduling intelligence from the reasoning intelligence. The MLP is dumb, fast, and local. The heavy models are smart, slow, and expensive. Keeping them in their lanes is what makes the whole system sustainable on a phone battery.</p>
+    </div>
+  </div>
+
+  <div class="subsection" style="margin-top:2rem">
+    <h3 class="subsection-title">D. Directed Daydreaming Seeding</h3>
+    <div class="prose">
+      <p><strong>Contextual Saturated Inversion:</strong> When the user completes an intense coding or research session, human cognitive focus leaves behind a heavy residual context footprint. We replicate this by forcing the CEN — upon completing a task — to capture all active keyword variables, modified node paths, and target UUID anchors, passing them directly to the Salience Network.</p>
+      <p>When the system shifts back to an idle state and the SN releases the DMN to resume background daydreaming, it injects these UUID anchors straight into the DMN's initialization queue. The background engine is forced to daydream natively within the immediate neighborhood of your active goals.</p>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section III</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Generate a training data schema for the TinyML MLP interrupt classifier — what does a labeled telemetry snapshot look like and how many samples are needed before the model generalizes well?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Generate a training data schema for the TinyML MLP interrupt classifier — what does a labeled telemetry snapshot look like and how many samples are needed before the model generalizes well?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Design the Cognitive Ticker Marquee's rendering pipeline — specifically how it layers over the Android display without requiring accessibility overlay permissions on Android 14+.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design the Cognitive Ticker Marquee\'s rendering pipeline — specifically how it layers over the Android display without requiring accessibility overlay permissions on Android 14+.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">What are the race conditions that can occur between DMN thread SIGSTOP and CEN database reads, and how does HelixDB's snapshot isolation actually protect against them?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'What are the race conditions that can occur between DMN thread SIGSTOP and CEN database reads, and how does HelixDB\'s snapshot isolation actually protect against them?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">How does directed daydreaming seeding differ from standard RAG retrieval augmentation? What does the DMN do with injected UUID anchors that a retrieval-augmented query pipeline doesn't?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'How does directed daydreaming seeding differ from standard RAG retrieval augmentation? What does the DMN do with injected UUID anchors that a retrieval-augmented query pipeline doesn\'t?')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION IV ─── -->
+<section class="spec-section" id="s4">
+  <div class="section-header">
+    <div class="section-number">Section IV</div>
+    <div>
+      <h2 class="section-title">Advanced Graph Dynamics:<br>Path Saturation &amp; Matrix Analysis</h2>
+      <p class="section-subtitle">Random walks, triadic closure, and keeping the graph from eating itself.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. The Path-Walking Paradox &amp; Pairwise Failure Saturation</h3>
+    <div class="callout amber">
+      <p><strong>The Combinatorial Trap:</strong> In a dense random walk traversal, you do not hold full forward path resolution before you execute a hop. You cannot predict the future of the walk due to random choice distribution. If a system attempts to map a failed synthesis attempt by hashing the entire sequential route string, the search space encounters an immediate exponential explosion. If you block an entire 7-step path because the end destination failed, you accidentally blind the agent to a brilliant branch it could have taken on step 8.</p>
+    </div>
+    <div class="card card-glow-t" style="margin-top:1.2rem">
+      <div class="card-title teal">The Pairwise Failure Caching Fix</div>
+      <p>When a background DMN thread walks a multi-hop path from Node A and fails to establish a valid structural analogy at Node B, it ignores the intermediate traversal track. It writes a direct, localized relationship property between the two terminal target nodes only:</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">HelixQL</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <div class="code-content">
+        <pre><span class="cm">// Pairwise failure badge — written on failed synthesis</span>
+(Node_A)-[<span class="kw">SYNTHESIS_ATTEMPT</span> {
+  <span class="prop">verdict</span>: <span class="str">"FAIL"</span>,
+  <span class="prop">timestamp</span>: <span class="str">1719448668</span>,
+  <span class="prop">token_cost</span>: <span class="str">847</span>,
+  <span class="prop">walk_depth</span>: <span class="str">4</span>
+}]-&gt;(Node_B)
+
+<span class="cm">// Future walker short-circuit check</span>
+<span class="kw">MATCH</span> (current)-[a:<span class="kw">SYNTHESIS_ATTEMPT</span>]-&gt;(candidate)
+<span class="kw">WHERE</span> a.verdict = <span class="str">"FAIL"</span>
+<span class="kw">RETURN</span> <span class="str">"SKIP"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. Linear Hops vs. Triadic Matrix Lookbacks</h3>
+    <div class="prose">
+      <p><strong>Linear Traversal:</strong> The physical walk itself is strictly linear and pairwise (A → B → C → D). The crawler hops between edges using HelixDB's memory-mapped page lookups, keeping compute overhead minimal.</p>
+      <p><strong>Triadic Matrix Evaluation:</strong> At each new node it steps onto, the DMN model holds a sliding path window of its last 3–4 nodes in short-term context. It builds a localized adjacency matrix of those specific nodes and runs a quick structural evaluation: <em>"I am standing on C. I got here via B, which came from A. Do A and C share an implicit property that bypasses B entirely?"</em></p>
+    </div>
+    <div class="callout">
+      <p><strong>Triadic Closure Execution:</strong> If the matrix calculation resolves a strong semantic alignment, the DMN executes a Triadic Closure — it writes a direct, explicit typed link directly from A → C. It compresses the operational path without deleting the original intermediate nodes. This preserves multiple redundant paths ("10 ways to grandma's house"), providing your agent with both high-speed semantic shortcuts and absolute historical audit trails.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">C. Managing Semantic Drift via The Analogy Evaluation Gate</h3>
+    <div class="prose">
+      <p><strong>Embracing the Drift:</strong> In a true background default mode network, semantic drift is not an execution flaw; it is the exact mechanism where high-leverage insights live. The cross-domain jump from a low-level Linux kernel paging algorithm to a South American macroeconomic liquidity injection is a high-value conceptual bridge.</p>
+      <p><strong>The Analogy Gate Filter:</strong> To allow boundless exploration while preventing the database from being polluted with low-value hallucinations — "Linux is like macroeconomics because they both use the letter 'L'" — we implement an Analogy Evaluation Gate. Before any long-haul edge is written, the engine runs a rapid structural alignment test. The model must articulate a strict functional analogy mapping a shared systemic invariant between the two schemas.</p>
+    </div>
+    <div class="card card-glow-a">
+      <div class="card-title amber">Gate Evaluation Logic</div>
+      <p>If the model maps a genuine mathematical or logical correlation, a <span class="tag tag-t">EUREKA</span> flag is raised and the link is saved. If it fails the structural mapping check, the path is flagged as <span class="tag tag-a">NOISE</span> and the log context is cleanly evicted from disk, registering a silent failure metric in <code style="color:var(--amber-soft);font-family:'JetBrains Mono',monospace;font-size:0.85em">state.json</code>.</p>
+    </div>
+
+    <div class="explainer">
+      <button class="explainer-toggle" onclick="toggleExplainer(this)">
+        <span class="explainer-icon">+</span>
+        Explainer — What makes an analogy "structurally valid" vs. noise?
+      </button>
+      <div class="explainer-body">
+        <p>This is the hardest part of the graph dynamics layer to implement well. The gate has to distinguish between two things that superficially look identical: a spurious surface-level similarity ("both use queues") and a genuine structural isomorphism ("both implement backpressure by the same mechanism under the same conditions").</p>
+        <p>The test is: can the model articulate a mapping function? Not "these are similar" but "X in system A plays the same role as Y in system B, and both are governed by invariant Z." If the invariant can be stated as a falsifiable claim, the analogy is valid. If it can only be stated as a vague resemblance, it fails the gate.</p>
+        <p>Practically, this means the gate prompt asks for a formal 3-tuple: (A_property, B_property, shared_invariant). The LLM must populate all three fields coherently. If it hedges or leaves the invariant blank, the edge doesn't get written. Token cost of the gate pass is kept low — it's a structured output check, not a full reasoning chain.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section IV</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Write the full HelixQL schema and traversal query for the triadic closure detection pass — including the sliding window buffer implementation and edge-write conditions.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Write the full HelixQL schema and traversal query for the triadic closure detection pass — including the sliding window buffer implementation and edge-write conditions.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">At what graph density does pairwise failure caching start to cost more than it saves? Derive the crossover point as a function of node count and average edge degree.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'At what graph density does pairwise failure caching start to cost more than it saves? Derive the crossover point as a function of node count and average edge degree.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Design the Analogy Gate's structured output schema — the exact 3-tuple format (A_property, B_property, shared_invariant) and a validation harness that tests gate accuracy against a labeled corpus of known-good and known-bad analogies.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design the Analogy Gate\'s structured output schema — the exact 3-tuple format (A_property, B_property, shared_invariant) and a validation harness that tests gate accuracy against a labeled corpus of known-good and known-bad analogies.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Enumerate five concrete cross-domain analogy pairs — across kernel engineering, macroeconomics, ecology, music theory, and martial arts — that would pass the Analogy Gate and explain why each constitutes a genuine structural invariant.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Enumerate five concrete cross-domain analogy pairs — across kernel engineering, macroeconomics, ecology, music theory, and martial arts — that would pass the Analogy Gate and explain why each constitutes a genuine structural invariant.')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION V ─── -->
+<section class="spec-section" id="s5">
+  <div class="section-header">
+    <div class="section-number">Section V</div>
+    <div>
+      <h2 class="section-title">Parallelism, Conflict Adjudication &amp; Provisional Agency</h2>
+      <p class="section-subtitle">Running concurrent without colliding. Deciding without asking.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. Multi-Threaded Snapshot Isolation</h3>
+    <div class="prose">
+      <p><strong>ACID-Compliant Concurrency:</strong> HelixDB utilizes an embedded Rust core that delivers full ACID transactions with serializable snapshot isolation. When you spawn multiple parallel background DMN daydreaming threads, every thread reads from a frozen, immutable snapshot of the graph at the exact moment it boots. They walk completely blind to each other's live footprints, ensuring zero data race conditions or file locks.</p>
+      <p><strong>Strict Additive Substrate:</strong> Because parallel walks are strictly additive — writing new insight nodes and appending relationship edges without mutating historical code — HelixDB's transactional layer resolves overlapping edge writes natively. Duplicate edges are safely handled as no-ops, and unique branches are seamlessly woven into the live database layer simultaneously.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. The Non-Blocking Provisional Assumption Protocol</h3>
+    <div class="callout">
+      <p><strong>True Tactical Agency:</strong> If an agent encounters an ambiguity or missing variable and must halt its execution loop to ping the user for confirmation, it lacks agency. Constant real-time notification warnings cause immediate human user fatigue.</p>
+    </div>
+
+    <div class="card card-glow-v" style="margin-top:1.2rem">
+      <div class="card-title">The Provisional Bet</div>
+      <p>When a choice conflict occurs, the engine logs a clear, non-blocking question payload to an active <em>Interview Queue</em> and instantly calculates the highest-probability path forward — making a <strong>Provisional Assumption</strong>. It generates downstream nodes normally, tagging their metadata with <span class="tag tag-a">verificationState: "ASSUMED"</span>.</p>
+    </div>
+
+    <div class="card card-glow-t" style="margin-top:1rem">
+      <div class="card-title teal">The 7-Day Expiry and Archive Inbox Logs</div>
+      <p>Unanswered interview blocks vanish from your live mobile marquee view after a 7-day period to prevent layout clutter. They drop securely into an Archive Log Inbox. The assumptions remain committed in HelixDB, but carry a distinct metadata state: <span class="tag tag-a">status: "ASSUMED"</span>. If you trace an obscure thought vector weeks later, you open the Archive log, read the exact logical bet the AI made in your absence, and click the entry to branch that historical conversation context into an active session.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">C. Thought Branching via Compressed Context Blobs</h3>
+    <div class="prose">
+      <p><strong>The Audit Trail Core:</strong> When the DMN completes a successful synthesis pass and weaves a new edge, it serializes the entire short-term context window — including system prompts, variables, and execution tracking logs — into a heavily compressed Gzip/Base64 string blob stored directly on the node path properties.</p>
+    </div>
+
+    <div class="triad-grid">
+      <div class="triad-card triad-dmn">
+        <div class="triad-label">Outcome A</div>
+        <div class="triad-name">Synthesis Permanence</div>
+        <p>If the DMN connects separate domains and the user interacts with that node, that context blob is granted absolute permanence. Tapping that entry unzips the 15KB block, feeds it into a fresh model session, and allows you to instantly branch that historical line of thought.</p>
+      </div>
+      <div class="triad-card triad-sn">
+        <div class="triad-label">Outcome B</div>
+        <div class="triad-name">Idle Eviction</div>
+        <p>If a random walk spends 2,000 tokens trying to find a link and concludes that no connection exists, the tracking context is instantly evicted from disk to protect storage boundaries, registering a silent failure metric in <code style="font-family:'JetBrains Mono',monospace;color:var(--teal-soft);font-size:0.85em">state.json</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">D. Dynamic Vector-Triggered Invalidation &amp; TinyML Conflict Adjudication</h3>
+    <div class="prose">
+      <p><strong>Vector-Triggered Invalidation:</strong> When a brand-new node (Node C) is ingested, HelixDB runs a proximity check. If Node C's vector spatial coordinates map into close alignment with both Node A and Node B simultaneously, it flags an implicit catalyst intersection. The Salience Network intercepts this flag, deletes the <span class="tag tag-a">SYNTHESIS_ATTEMPT: FAIL</span> edge between A and B, and queues that pair for an immediate, re-seeded DMN walk. Context evolved; the historical blockade lifts.</p>
+      <p><strong>The TinyML Conflict Adjudicator:</strong> A local, small-parameter imitation-learning network handles low-tier semantic contradictions. By continuously watching how you manually resolve ideological clashes in your daily logs, it trains its classification parameters locally on-device. It safely resolves minor structural disputes natively, only escalating true high-leverage strategic clashes up to your physical workspace marquee view.</p>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section V</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">What's the exact serialization format for the compressed context blob? How do you handle the tradeoff between compression ratio and decompression latency when a user taps an archived synthesis node?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'What\'s the exact serialization format for the compressed context blob? How do you handle the tradeoff between compression ratio and decompression latency when a user taps an archived synthesis node?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Design the Interview Queue data model — what fields does a provisional assumption record contain, and how does the Archive Log Inbox UI surface the AI's original reasoning alongside your ability to branch it?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design the Interview Queue data model — what fields does a provisional assumption record contain, and how does the Archive Log Inbox UI surface the AI\'s original reasoning alongside your ability to branch it?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">How does vector-triggered invalidation handle the case where Node C is itself later corrupted or retracted? Does the A→B failure badge get reinstated, or does the system need a separate retraction protocol?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'How does vector-triggered invalidation handle the case where Node C is itself later corrupted or retracted? Does the A→B failure badge get reinstated, or does the system need a separate retraction protocol?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">At what volume of provisional assumptions does the Archive Log Inbox become cognitively overwhelming, and how should the UI triage them by estimated impact vs. age?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'At what volume of provisional assumptions does the Archive Log Inbox become cognitively overwhelming, and how should the UI triage them by estimated impact vs. age?')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION VI ─── -->
+<section class="spec-section" id="s6">
+  <div class="section-header">
+    <div class="section-number">Section VI</div>
+    <div>
+      <h2 class="section-title">The Graph Surgeon Protocol</h2>
+      <p class="section-subtitle">Sub-graph trauma surgery. Excise the tumor, preserve the healthy tissue.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. The Taint Cascade Threat</h3>
+    <div class="callout amber">
+      <p><strong>The Proximity Contamination Vector:</strong> Because knowledge graphs represent highly interconnected mathematical matrix spaces, a single unverified model hallucination, broken logic loop, or corrupted data link can act like a malignant tumor. It propagates downward through inherited edges, polluting thousands of healthy downstream dependencies within days.</p>
+    </div>
+    <div class="card card-glow-a" style="margin-top:1.2rem">
+      <div class="card-title amber">The Sledgehammer Sins of Rollbacks</div>
+      <p>Relying purely on a global filesystem database rollback is a critical failure vector. If you restore an entire database container back to its state five days ago to clear an active taint, you permanently erase five days of completely valid code updates, local transcriptions, and custom voice dictations that you desperately want to keep.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. The Surgical Pruning Loop</h3>
+    <div class="prose">
+      <p>The <strong>Graph Surgeon</strong> runs natively inside the HelixDB Rust core. When a corruption seed is flagged, it executes a three-stage precision excision loop:</p>
+    </div>
+
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <div class="pillar-name">Blast Radius Traversal</div>
+        <div class="pillar-desc">Recursive, multi-hop breadth-first search downward from the verified corrupt node coordinates. Filters exclusively for child nodes carrying the corrupted file location footprint or line-coordinate ranges, mapping the explicit boundaries of the inherited contamination.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <div class="pillar-name">Atomic Excision</div>
+        <div class="pillar-desc">Cuts out the corrupted property fields and faulty relationship attributes inside HelixDB atomically within a single transaction block, preventing database locks and dropping the tumor out of the live graph matrix.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <div class="pillar-name">Contextual Grafting</div>
+        <div class="pillar-desc">If a healthy downstream node contains verified user context but was isolated by the cut, the Surgeon shears the bad link and automatically re-grafts that clean node back onto a secure, verified historical parent anchor path. System data integrity is restored without losing work history.</div>
+      </div>
+    </div>
+
+    <div class="explainer">
+      <button class="explainer-toggle" onclick="toggleExplainer(this)">
+        <span class="explainer-icon">+</span>
+        Explainer — Why BFS and not DFS for blast radius traversal?
+      </button>
+      <div class="explainer-body">
+        <p>Depth-first search would follow one contamination path to its full depth before exploring siblings. That's dangerous here because taint propagation in a knowledge graph isn't necessarily deep — it's wide. A single corrupted Concept node might have [:REFERENCES] edges to 50 AtomicNodes across completely unrelated domains. DFS would dive deep into one lineage while leaving 49 contaminated cousins untouched.</p>
+        <p>BFS expands the blast radius layer by layer from the corruption seed. It discovers the full scope of infection before excising anything, which means the Surgeon can build a complete contamination map and then plan the grafting strategy across all orphaned healthy nodes simultaneously — rather than mid-surgery discovering that a "healthy" graft target was actually contaminated two degrees away.</p>
+        <p>The practical difference: BFS gives you a complete damage assessment before the first cut. DFS risks mid-surgery surprises that could leave the database in an inconsistent partial-excision state.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section VI</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Write the Rust pseudocode for the Graph Surgeon's BFS blast radius traversal — specifically the contamination filter predicate and the orphaned-node detection logic.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Write the Rust pseudocode for the Graph Surgeon\'s BFS blast radius traversal — specifically the contamination filter predicate and the orphaned-node detection logic.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">How does the system detect a corruption seed in the first place? Design the confidence-score threshold system that triggers a Graph Surgeon invocation versus a simple node flag.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'How does the system detect a corruption seed in the first place? Design the confidence-score threshold system that triggers a Graph Surgeon invocation versus a simple node flag.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">What happens when the Contextual Grafting step discovers that the nearest verified parent anchor is itself a Provisional Assumption — should the graft proceed, pause, or trigger a human review?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'What happens when the Contextual Grafting step discovers that the nearest verified parent anchor is itself a Provisional Assumption — should the graft proceed, pause, or trigger a human review?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Compare the Graph Surgeon protocol against Git's reflog recovery, database WAL (Write-Ahead Log) replay, and event sourcing as alternative strategies for surviving corruption without full rollback.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Compare the Graph Surgeon protocol against Git\'s reflog recovery, database WAL (Write-Ahead Log) replay, and event sourcing as alternative strategies for surviving corruption without full rollback.')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION VII ─── -->
+<section class="spec-section" id="s7">
+  <div class="section-header">
+    <div class="section-number">Section VII</div>
+    <div>
+      <h2 class="section-title">HelixDB Architecture &amp; Device Deployment</h2>
+      <p class="section-subtitle">Local sovereignty at sub-millisecond latency. Zero cloud dependency.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. Local Device Sovereignty</h3>
+    <div class="prose">
+      <p><strong>The NDK/JNI Embedded Core:</strong> HelixDB is compiled directly into a native library binary package and bundled straight inside your mobile Android Kotlin application wrapper. It requires zero cloud server connections or external database daemons to run locally.</p>
+      <p><strong>Memory-Mapped File Performance:</strong> By operating directly on top of an embedded <strong>LMDB</strong> backend, HelixDB maps its graph data, vector array matrices, and full-text indices into unified memory-mapped file pages. This delivers sub-millisecond read latencies directly on your local device hardware storage disk, keeping your entire cognitive memory loop 100% functional even when the device enters a complete cellular network dead zone.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. The Unified Data Model</h3>
+    <div class="card card-glow-v">
+      <div class="card-title">Eradicating Database Proliferation</div>
+      <p>HelixDB entirely replaces the classic architecture stack that requires combining a separate SQL engine for relational tables, a Document database for notes, and a Vector store for embeddings. All entities — including user profiles, document content blocks, semantic vector embeddings, and explicit properties — are represented as structured nodes and typed relationships within a single database layer.</p>
+    </div>
+
+    <div class="triad-grid" style="margin-top:1.5rem">
+      <div class="triad-card triad-dmn">
+        <div class="triad-label">Replaced</div>
+        <div class="triad-name">SQL Engine</div>
+        <p>Relational tables, foreign keys, JOIN operations, schema migrations. All modeled as typed node properties and relationship edges in HelixDB.</p>
+      </div>
+      <div class="triad-card triad-sn">
+        <div class="triad-label">Replaced</div>
+        <div class="triad-name">Document Store</div>
+        <p>Notes, content blocks, unstructured text. Represented as AtomicNodes with line-coordinate and byte-offset properties for precise spatial addressing.</p>
+      </div>
+      <div class="triad-card triad-cen">
+        <div class="triad-label">Replaced</div>
+        <div class="triad-name">Vector Database</div>
+        <p>Semantic embeddings, similarity search, proximity clustering. Native vector array matrices stored directly on node properties with memory-mapped retrieval.</p>
+      </div>
+    </div>
+
+    <div class="code-block" style="margin-top:1.5rem">
+      <div class="code-header">
+        <span class="code-lang">HelixQL — Type-Safe Node Creation</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <div class="code-content">
+        <pre><span class="cm">// HelixQL — type-safe functional query language</span>
+<span class="cm">// Modeled after Rust syntax; no SQL tables, no Cypher strings</span>
+
+<span class="kw">CREATE NODE</span> AtomicNode {
+  <span class="prop">uuid</span>:               <span class="kw">Hash</span>           = <span class="str">auto_generate()</span>,
+  <span class="prop">namespace</span>:          <span class="kw">String</span>         = <span class="str">"cognitive_os::intake"</span>,
+  <span class="prop">content</span>:            <span class="kw">String</span>         = <span class="str">required</span>,
+  <span class="prop">vector</span>:             <span class="kw">Float[768]</span>     = <span class="str">embed(content)</span>,
+  <span class="prop">source_asset_uuid</span>:  <span class="kw">Hash</span>           = <span class="str">required</span>,
+  <span class="prop">line_start</span>:         <span class="kw">Int</span>            = <span class="str">required</span>,
+  <span class="prop">line_end</span>:           <span class="kw">Int</span>            = <span class="str">required</span>,
+  <span class="prop">byte_start</span>:         <span class="kw">Int</span>            = <span class="str">required</span>,
+  <span class="prop">byte_end</span>:           <span class="kw">Int</span>            = <span class="str">required</span>,
+  <span class="prop">confidence</span>:         <span class="kw">Float</span>          = <span class="str">1.0</span>,
+  <span class="prop">verificationState</span>:  <span class="kw">Enum</span>           = <span class="str">VERIFIED | ASSUMED | FLAGGED</span>,
+  <span class="prop">created_at</span>:         <span class="kw">Timestamp</span>      = <span class="str">now()</span>,
+  <span class="prop">context_blob</span>:       <span class="kw">Option&lt;Bytes&gt;</span>  = <span class="str">None</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section VII</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Walk me through the JNI bridge layer between the Android Kotlin application and the HelixDB Rust NDK binary — specifically the memory ownership model and how you avoid GC pauses on the Java heap during graph traversal.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Walk me through the JNI bridge layer between the Android Kotlin application and the HelixDB Rust NDK binary — specifically the memory ownership model and how you avoid GC pauses on the Java heap during graph traversal.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">How does LMDB's memory-mapped file approach handle the Android file system sandbox and encrypted storage on Android 13+? Are there write amplification concerns on NAND flash at this workload pattern?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'How does LMDB\'s memory-mapped file approach handle the Android file system sandbox and encrypted storage on Android 13+? Are there write amplification concerns on NAND flash at this workload pattern?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Design the HelixQL index strategy for vector proximity search at 100K nodes — what's the ANN (approximate nearest neighbors) algorithm embedded in HelixDB and how does it degrade gracefully on low-RAM devices?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design the HelixQL index strategy for vector proximity search at 100K nodes — what\'s the ANN (approximate nearest neighbors) algorithm embedded in HelixDB and how does it degrade gracefully on low-RAM devices?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Compare HelixDB's unified node+vector+document model against a hybrid Turso (libSQL) + Chroma (vector) stack for this specific mobile-first, offline-first cognitive substrate use case. Where does each architecture break?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Compare HelixDB\'s unified node+vector+document model against a hybrid Turso (libSQL) + Chroma (vector) stack for this specific mobile-first, offline-first cognitive substrate use case. Where does each architecture break?')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION VIII — NEW ─── -->
+<section class="spec-section" id="s8">
+  <div class="section-header">
+    <div class="section-number">Section VIII</div>
+    <div>
+      <h2 class="section-title">The Ambient Signal Doctrine:<br>Metadata Totality &amp; the Damp Air Principle</h2>
+      <p class="section-subtitle">We don't yet know what is signal. So we capture everything.</p>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A. The Epistemological Foundation</h3>
+    <div class="callout teal">
+      <p><strong>The Lightning-in-a-Bottle Problem:</strong> A genuinely valuable cognitive insight is rare, non-linear, and context-saturated. It arrives unexpectedly, lives at the intersection of unrelated domains, and is <em>illegible at the moment of its formation</em>. You cannot know, in real time, whether the thought you're having is noise or the seed of a breakthrough. This is the fundamental epistemological problem the Ambient Signal Doctrine exists to solve.</p>
+    </div>
+    <div class="prose">
+      <p>The classical response to this problem is curation: filter aggressively at capture time, only record what seems important. This strategy fails precisely when you need it most. The thought that feels mundane at 11pm on a Tuesday is frequently the one that becomes structurally critical six months later, after new context has arrived to reveal its latent significance.</p>
+      <p><strong>The Damp Air Principle:</strong> To reliably capture lightning in a bottle, you must be willing to bottle a great deal of damp air. The semantic relationship between the music playing during a particular ingestion event and the abstract concept being formed may not be visible today. It may become visible only when a future DMN walk traverses them together and the Analogy Gate fires on a cross-domain structural invariant you didn't anticipate.</p>
+      <p><strong>Therefore: we err radically on the side of collection.</strong> The filtering happens later, at query time, by retrieval algorithms with far more context than you had at capture time. Storage is cheap. Missed lightning is not recoverable.</p>
+    </div>
+
+    <div class="explainer">
+      <button class="explainer-toggle" onclick="toggleExplainer(this)">
+        <span class="explainer-icon">+</span>
+        Explainer — The neuroscience case for ambient capture
+      </button>
+      <div class="explainer-body">
+        <p>The brain's default mode network — the biological original that inspired Section III — doesn't filter during experience. It records everything the sensory apparatus delivers. The filtering, consolidation, and meaning-making happen later: during sleep, during idle wandering, during the half-aware state between tasks. The "aha moment" in the shower isn't a new thought — it's the brain's background processes finally surfacing a connection that was being assembled from fragments captured over days or weeks.</p>
+        <p>The problem with most note-taking and knowledge systems is they demand that filtering happen at capture time, when you're in the middle of thinking. That's the worst possible moment to evaluate the long-term significance of an idea — you have maximum task focus and minimum contextual perspective.</p>
+        <p>The Cognitive OS inverts this. Capture everything at zero friction, with maximum ambient context metadata attached. Then let the DMN's background walk processes — running while you sleep, while you cook, while you're doing something else entirely — perform the synthesis and significance-scoring in the background, with the full weight of the accumulated graph behind them.</p>
+        <p>The music you were listening to when you had the thought is not decoration. It's a temporal and emotional coordinate that may, one day, help the system reconstruct the cognitive state you were in when the fragment was formed — and find other fragments formed in similar states that you'd never connect manually.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">B. The Full Ambient Capture Manifest</h3>
+    <div class="prose">
+      <p>The following metadata fields are captured on every ingestion event. Some have obvious semantic utility immediately. Others are collected purely because we cannot currently prove they are irrelevant — and the cost of capturing them is far lower than the cost of having wished we had.</p>
+    </div>
+
+    <div class="signal-matrix">
+      <div class="signal-card">
+        <span class="signal-card-icon">🎵</span>
+        <div class="signal-card-name">Music Context</div>
+        <div class="signal-card-desc">Track title, artist, album, BPM, musical key, Spotify/Last.fm mood tags, genre cluster. The music playing during ingestion is a proxy for cognitive and emotional state — a temporal fingerprint that may reveal patterns invisible to explicit metadata.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">📍</span>
+        <div class="signal-card-name">Spatial Coordinates</div>
+        <div class="signal-card-desc">GPS lat/long, reverse-geocoded location label (home office, coffee shop, commute), elevation, indoor/outdoor classification. Physical space modulates cognitive mode in ways that are real but poorly understood.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">🕐</span>
+        <div class="signal-card-name">Temporal Context</div>
+        <div class="signal-card-desc">Exact Unix timestamp, local time-of-day, day-of-week, time since last sleep, time since last ingestion event, time since last human conversation. Circadian rhythm is a significant cognitive variable.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">🌡️</span>
+        <div class="signal-card-name">Environmental Conditions</div>
+        <div class="signal-card-desc">Ambient temperature, humidity, barometric pressure, weather condition at location, UV index, season. Environmental factors have documented but underweighted effects on cognitive state.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">🔊</span>
+        <div class="signal-card-name">Acoustic Fingerprint</div>
+        <div class="signal-card-desc">Ambient decibel level (dB SPL), dominant frequency bands, sound scene classification (silent, speech, traffic, nature, music), acoustic entropy score. Noise environment is a strong proxy for focus state.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">📱</span>
+        <div class="signal-card-name">App Focus Vector</div>
+        <div class="signal-card-desc">Active application name and category, window title hash, most recent browser tab domain, open document type. The computational context immediately before and during ingestion is a rich signal about the associative neighborhood of the thought.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">⚡</span>
+        <div class="signal-card-name">Device State</div>
+        <div class="signal-card-desc">Battery level and charge state, screen brightness, network connectivity type and signal strength, CPU thermal state. Device constraints modulate user behavior and urgency in non-obvious ways.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">📊</span>
+        <div class="signal-card-name">Session Metrics</div>
+        <div class="signal-card-desc">Active token throughput rate, TinyML salience score at capture time, current DMN/SN/CEN network state, number of concurrent background threads, last Graph Surgeon event delta. System state is context about the context.</div>
+      </div>
+      <div class="signal-card">
+        <span class="signal-card-icon">💬</span>
+        <div class="signal-card-name">Social Context</div>
+        <div class="signal-card-desc">Bluetooth device presence (indicates other people), recent communication app activity class (active conversation, passive scroll, no activity), time since last phone call. Solitude vs. social presence is a strong cognitive state modulator.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">C. Music as a Semantic Coordinate — The Case Study</h3>
+    <div class="prose">
+      <p>Music is the clearest example of why ambient capture philosophy matters and the most likely vector for unexpected future synthesis value.</p>
+    </div>
+
+    <div class="card card-glow-t">
+      <div class="card-title teal">Why Music Metadata Is Not Noise</div>
+      <p style="margin-bottom:0.8rem">Consider: you have a 30-year history in the Columbus underground electronic music scene, particularly drum and bass. Your cognitive engagement with DnB tracks — the attention, the pattern recognition, the structural listening — is not decorative. It's a form of active cognitive processing that co-occurs with and likely modulates your technical thinking.</p>
+      <p style="margin-bottom:0.8rem">A DMN walk six months from now might discover that a cluster of your highest-confidence technical insights were all ingested during sessions where a specific sub-genre or BPM range was playing. That's not anecdote — that's a retrievable pattern that could inform optimal conditions for future technical work.</p>
+      <p>More subtly: music has structural properties — polyrhythm, harmonic tension, call-and-response, phase relationships — that are formally isomorphic to patterns in distributed systems, graph theory, and signal processing. A future Analogy Gate evaluation might fire on a cross-domain bridge between a Goldie track and a HelixDB traversal algorithm that you would never have found by searching.</p>
+    </div>
+
+    <div class="code-block" style="margin-top:1.5rem">
+      <div class="code-header">
+        <span class="code-lang">HelixQL — Full Ambient Metadata Node Schema</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <div class="code-content">
+        <pre><span class="kw">CREATE NODE</span> AmbientContext {
+  <span class="cm">// Temporal</span>
+  <span class="prop">timestamp_unix</span>:     <span class="kw">Int</span>           = <span class="str">required</span>,
+  <span class="prop">local_time_of_day</span>:  <span class="kw">String</span>        = <span class="str">"HH:MM"</span>,
+  <span class="prop">day_of_week</span>:        <span class="kw">Int</span>           = <span class="str">0..6</span>,
+  <span class="prop">session_duration_s</span>: <span class="kw">Int</span>           = <span class="str">seconds_since_session_start()</span>,
+
+  <span class="cm">// Spatial</span>
+  <span class="prop">gps_lat</span>:            <span class="kw">Float</span>         = <span class="str">required</span>,
+  <span class="prop">gps_lng</span>:            <span class="kw">Float</span>         = <span class="str">required</span>,
+  <span class="prop">location_label</span>:     <span class="kw">Option&lt;String&gt;</span>= <span class="str">reverse_geocode(gps_lat, gps_lng)</span>,
+
+  <span class="cm">// Music</span>
+  <span class="prop">music_track</span>:        <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+  <span class="prop">music_artist</span>:       <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+  <span class="prop">music_bpm</span>:          <span class="kw">Option&lt;Float&gt;</span> = <span class="str">None</span>,
+  <span class="prop">music_key</span>:          <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+  <span class="prop">music_mood_tags</span>:    <span class="kw">Option&lt;String[]&gt;</span>= <span class="str">None</span>,
+  <span class="prop">music_genre</span>:        <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+
+  <span class="cm">// Acoustic environment</span>
+  <span class="prop">ambient_db</span>:         <span class="kw">Float</span>         = <span class="str">required</span>,
+  <span class="prop">sound_scene</span>:        <span class="kw">Enum</span>          = <span class="str">SILENT|SPEECH|MUSIC|TRAFFIC|NATURE</span>,
+
+  <span class="cm">// App context</span>
+  <span class="prop">active_app</span>:         <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+  <span class="prop">window_title_hash</span>:  <span class="kw">Option&lt;Hash&gt;</span>  = <span class="str">None</span>,
+
+  <span class="cm">// System state</span>
+  <span class="prop">battery_pct</span>:        <span class="kw">Float</span>         = <span class="str">required</span>,
+  <span class="prop">salience_score</span>:     <span class="kw">Float</span>         = <span class="str">required</span>,
+  <span class="prop">network_type</span>:       <span class="kw">Enum</span>          = <span class="str">WIFI|LTE|5G|OFFLINE</span>,
+
+  <span class="cm">// Environmental</span>
+  <span class="prop">weather_condition</span>:  <span class="kw">Option&lt;String&gt;</span>= <span class="str">None</span>,
+  <span class="prop">temp_celsius</span>:       <span class="kw">Option&lt;Float&gt;</span> = <span class="str">None</span>
+}
+
+<span class="cm">// Every AtomicNode carries a [:CAPTURED_DURING] edge to its AmbientContext</span>
+(AtomicNode)-[<span class="kw">:CAPTURED_DURING</span>]-&gt;(AmbientContext)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">D. The Privacy Architecture of Total Collection</h3>
+    <div class="callout">
+      <p><strong>Sovereign data containment is not optional here — it is the precondition for total capture.</strong> The Ambient Signal Doctrine is only ethically and practically tenable because all of this data lives exclusively on-device inside HelixDB, with zero cloud synchronization by default. The data is yours. It never leaves the hardware boundary you control. This is why local sovereignty (Section VII) is an architectural requirement, not a preference.</p>
+    </div>
+    <div class="prose">
+      <p>The social context capture — Bluetooth device presence, communication app activity — requires explicit user consent and operates on fuzzy classifications only. No raw communications content is ever ingested. The system records the <em>class</em> of activity ("active voice conversation") not its contents. Location labels are computed locally via reverse geocoding and stored as human-readable strings; raw GPS coordinates may be blurred to neighborhood resolution for frequently visited locations after the first 30 days.</p>
+    </div>
+
+    <div class="signal-group">
+      <div class="signal-row">
+        <div class="signal-name">Temporal metadata</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:95%"></div></div>
+        <div class="signal-val">95%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">Music context</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:85%"></div></div>
+        <div class="signal-val">85%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">Spatial / GPS</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:78%"></div></div>
+        <div class="signal-val">78%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">Acoustic fingerprint</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:90%"></div></div>
+        <div class="signal-val">90%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">App focus vector</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:72%"></div></div>
+        <div class="signal-val">72%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">Social context</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:45%"></div></div>
+        <div class="signal-val">45%</div>
+      </div>
+      <div class="signal-row">
+        <div class="signal-name">Environmental conditions</div>
+        <div class="signal-bar-bg"><div class="signal-bar-fill" style="width:60%"></div></div>
+        <div class="signal-val">60%</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-dim);margin-top:0.5rem">Estimated expected utility scores at 12-month graph maturity — based on known correlations between metadata class and cognitive state predictability. Social context rated lower due to consent friction and fuzzy classification overhead.</p>
+  </div>
+
+  <div class="prompts-section">
+    <div class="prompts-label">Exploratory Prompts — Section VIII</div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-text">Design a DMN walk variant specifically seeded to explore music-concept correlations — what's the query pattern that links AtomicNodes ingested during similar music states to discover cognitively-coherent clusters?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Design a DMN walk variant specifically seeded to explore music-concept correlations — what\'s the query pattern that links AtomicNodes ingested during similar music states to discover cognitively-coherent clusters?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">At what graph maturity (node count, edge density, time elapsed) does ambient metadata start yielding statistically significant pattern signal? Design a minimal validity test for the Damp Air Principle.</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'At what graph maturity (node count, edge density, time elapsed) does ambient metadata start yielding statistically significant pattern signal? Design a minimal validity test for the Damp Air Principle.')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Map the Android permission requirements for each ambient capture channel (GPS, audio sampling, app focus, Bluetooth presence) against Android 14's permission model — which channels require background permission grants and which can run in foreground service only?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Map the Android permission requirements for each ambient capture channel (GPS, audio sampling, app focus, Bluetooth presence) against Android 14\'s permission model — which channels require background permission grants and which can run in foreground service only?')">Copy</button>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-text">Formally model the structural isomorphism between polyrhythmic DnB patterns and distributed systems consensus protocols — would this pair pass the Analogy Gate, and what shared invariant would the model need to articulate?</div>
+        <button class="prompt-copy" onclick="copyPrompt(this, 'Formally model the structural isomorphism between polyrhythmic DnB patterns and distributed systems consensus protocols — would this pair pass the Analogy Gate, and what shared invariant would the model need to articulate?')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">COG<span>OS</span> &nbsp;·&nbsp; Master Specification Rev. 2026</div>
+  <div class="footer-note">This document is a cognitive bootstrap artifact. Read cold after extended absence to recover full operational context. All concepts herein are living specifications subject to directed daydreaming expansion.</div>
+</footer>
+
+<!-- ════════════════════════════════════════════
+     THREE.JS HERO ANIMATION
+═══════════════════════════════════════════════ -->
+<script>
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, canvas.offsetWidth / canvas.offsetHeight, 0.1, 1000);
+  camera.position.z = 80;
+
+  // Nodes
+  const nodeCount = 60;
+  const nodePositions = [];
+  const nodeMeshes = [];
+  const nodeGeo = new THREE.SphereGeometry(0.6, 8, 8);
+
+  for (let i = 0; i < nodeCount; i++) {
+    const x = (Math.random() - 0.5) * 160;
+    const y = (Math.random() - 0.5) * 100;
+    const z = (Math.random() - 0.5) * 60;
+    nodePositions.push(new THREE.Vector3(x, y, z));
+
+    const palette = [0x7c3aed, 0x0d9488, 0xa78bfa, 0x5eead4, 0x4c1d95];
+    const color = palette[Math.floor(Math.random() * palette.length)];
+    const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.6 + Math.random() * 0.4 });
+    const mesh = new THREE.Mesh(nodeGeo, mat);
+    mesh.position.copy(nodePositions[i]);
+    mesh.userData.basePos = nodePositions[i].clone();
+    mesh.userData.phase = Math.random() * Math.PI * 2;
+    mesh.userData.speed = 0.3 + Math.random() * 0.4;
+    scene.add(mesh);
+    nodeMeshes.push(mesh);
+  }
+
+  // Edges
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.12 });
+  const maxDist = 38;
+  for (let i = 0; i < nodeCount; i++) {
+    for (let j = i + 1; j < nodeCount; j++) {
+      if (nodePositions[i].distanceTo(nodePositions[j]) < maxDist) {
+        const geo = new THREE.BufferGeometry().setFromPoints([nodePositions[i], nodePositions[j]]);
+        scene.add(new THREE.Line(geo, edgeMat));
+      }
+    }
+  }
+
+  function resize() {
+    const w = canvas.offsetWidth, h = canvas.offsetHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.008;
+    nodeMeshes.forEach(m => {
+      m.position.x = m.userData.basePos.x + Math.sin(t * m.userData.speed + m.userData.phase) * 2;
+      m.position.y = m.userData.basePos.y + Math.cos(t * m.userData.speed * 0.7 + m.userData.phase) * 1.5;
+    });
+    scene.rotation.y = t * 0.04;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+
+<!-- ════════════════════════════════════════════
+     INTERACTIONS
+═══════════════════════════════════════════════ -->
+<script>
+function toggleExplainer(btn) {
+  const ex = btn.closest('.explainer');
+  ex.classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyPrompt(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Nav active state on scroll
+const sections = document.querySelectorAll('.spec-section');
+const navLinks = document.querySelectorAll('.nav-link');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
