@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPH — SPEC v0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14120f;
+    --surface:#1c1812;
+    --surface-2:#221d16;
+    --line:#3a332a;
+    --line-soft:#2a251d;
+    --amber:#E8A33D;
+    --amber-dim:#8a662a;
+    --rust:#B5533C;
+    --teal:#6E8B7A;
+    --text:#EDE6D6;
+    --text-muted:#8C8370;
+    --mono:'IBM Plex Mono', monospace;
+    --sans:'IBM Plex Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,163,61,0.06), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.55;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px;}
+
+  /* header / title block */
+  .titleblock{
+    border:1px solid var(--line);
+    margin-top:40px;
+    background:var(--surface);
+    position:relative;
+  }
+  .titleblock::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(232,163,61,0.025) 28px);
+    pointer-events:none;
+  }
+  .wireframe-panel{
+    border:1px solid var(--line);
+    border-top:none;
+    background:var(--surface-2);
+    padding:10px 0 0;
+  }
+  .wireframe-panel-label{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    padding:0 18px 10px;
+    border-bottom:1px dashed var(--line-soft);
+  }
+  #wireframe-mount{
+    width:100%;
+    height:220px;
+    display:block;
+  }
+  #wireframe-mount canvas{
+    display:block;
+  }
+  .titlebar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 18px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    color:var(--text-muted);
+    text-transform:uppercase;
+  }
+  .titlebar span.dot{color:var(--amber);}
+  .titlemain{padding:28px 24px 24px;}
+  h1{
+    font-family:var(--mono);
+    font-size:28px;
+    font-weight:700;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+    color:var(--text);
+  }
+  h1 .accent{color:var(--amber);}
+  .subhead{
+    color:var(--text-muted);
+    font-size:14.5px;
+    max-width:56ch;
+    margin:0 0 18px;
+  }
+  .metarow{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-muted);
+    letter-spacing:0.04em;
+    border-top:1px dashed var(--line-soft);
+    padding-top:14px;
+  }
+  .metarow b{color:var(--amber); font-weight:600;}
+
+  /* section headers */
+  .section{margin-top:44px;}
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:16px;
+  }
+  .sechead .num{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--amber-dim);
+    border:1px solid var(--line);
+    padding:2px 6px;
+    letter-spacing:0.05em;
+  }
+  .sechead h2{
+    font-family:var(--mono);
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    margin:0;
+    color:var(--text);
+    font-weight:600;
+  }
+  .sechead::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+
+  /* tier rows */
+  .tier{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:18px;
+    border:1px solid var(--line-soft);
+    border-left:2px solid var(--amber-dim);
+    background:var(--surface);
+    padding:16px 18px;
+    margin-bottom:10px;
+  }
+  .tier .label{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--amber);
+    letter-spacing:0.04em;
+  }
+  .tier .label small{display:block;color:var(--text-muted);font-size:10.5px;margin-top:4px;letter-spacing:0.06em;}
+  .tier p{margin:0;font-size:14px;color:var(--text);}
+  .tier code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:1px 5px;border:1px solid var(--line-soft);color:var(--amber);}
+
+  /* BOM cards */
+  .bom{
+    border:1px solid var(--line-soft);
+    background:var(--surface);
+    margin-bottom:10px;
+    position:relative;
+    overflow:hidden;
+  }
+  .bomhead{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line-soft);
+    background:var(--surface-2);
+  }
+  .part-id{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-muted);
+    letter-spacing:0.05em;
+  }
+  .bomhead h3{
+    font-family:var(--mono);
+    font-size:14px;
+    margin:0;
+    flex:1;
+    font-weight:600;
+    color:var(--text);
+  }
+  .stamp{
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    padding:3px 9px;
+    border:1.5px solid var(--amber);
+    color:var(--amber);
+    transform:rotate(-2deg);
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .stamp.excluded{border-color:var(--rust);color:var(--rust);}
+  .stamp.deferred{border-color:var(--teal);color:var(--teal);}
+  .bombody{padding:14px 16px 16px;}
+  .bombody ul{margin:0;padding-left:18px;}
+  .bombody li{font-size:13.5px;color:var(--text);margin-bottom:6px;}
+  .bombody li:last-child{margin-bottom:0;}
+  .bombody li b{color:var(--amber);font-weight:600;}
+  .bombody code{font-family:var(--mono);font-size:12px;background:var(--surface-2);padding:1px 5px;border:1px solid var(--line-soft);color:var(--amber);}
+  .bombody p{font-size:13.5px;margin:0;color:var(--text);}
+
+  /* deploy defaults - inline list */
+  .flowlist{
+    border:1px solid var(--line-soft);
+    background:var(--surface);
+    padding:6px 18px;
+  }
+  .flowitem{
+    display:flex;
+    gap:14px;
+    padding:12px 0;
+    border-bottom:1px dashed var(--line-soft);
+    align-items:baseline;
+  }
+  .flowitem:last-child{border-bottom:none;}
+  .flowitem .tag{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--bg);
+    background:var(--amber);
+    padding:2px 7px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    white-space:nowrap;
+  }
+  .flowitem p{margin:0;font-size:13.5px;}
+
+  /* excluded rows */
+  .exrow{
+    display:grid;
+    grid-template-columns:1fr;
+    border:1px solid var(--line-soft);
+    border-left:2px solid var(--rust);
+    background:var(--surface);
+    padding:14px 18px;
+    margin-bottom:8px;
+  }
+  .exrow .exname{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--rust);
+    font-weight:600;
+    letter-spacing:0.02em;
+    margin-bottom:5px;
+  }
+  .exrow p{margin:0;font-size:13.5px;color:var(--text);}
+
+  /* open items */
+  .openlist{list-style:none;margin:0;padding:0;border:1px solid var(--line-soft);background:var(--surface);}
+  .openlist li{
+    display:flex;
+    gap:12px;
+    padding:12px 18px;
+    border-bottom:1px solid var(--line-soft);
+    font-size:13.5px;
+  }
+  .openlist li:last-child{border-bottom:none;}
+  .openlist .box{
+    width:13px;height:13px;
+    border:1.5px solid var(--amber-dim);
+    flex-shrink:0;
+    margin-top:2px;
+  }
+
+  /* copy box */
+  .copysection{
+    margin-top:52px;
+    border:1px solid var(--line);
+    background:var(--surface);
+  }
+  .copyhead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 18px;
+    border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  .copyhead h2{
+    font-family:var(--mono);
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    margin:0;
+    color:var(--text-muted);
+  }
+  .copybtn{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.05em;
+    background:var(--amber);
+    color:var(--bg);
+    border:none;
+    padding:7px 14px;
+    cursor:pointer;
+    font-weight:700;
+    text-transform:uppercase;
+    transition:background 0.15s ease;
+  }
+  .copybtn:hover{background:#f2b859;}
+  .copybtn.copied{background:var(--teal);color:var(--bg);}
+  textarea#raw{
+    width:100%;
+    height:220px;
+    background:var(--bg);
+    color:var(--text-muted);
+    border:none;
+    font-family:var(--mono);
+    font-size:11.5px;
+    line-height:1.6;
+    padding:16px 18px;
+    resize:vertical;
+    display:block;
+  }
+  textarea#raw:focus{outline:1px solid var(--amber-dim); outline-offset:-1px;}
+
+  footer{
+    text-align:center;
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--line);
+    margin-top:40px;
+    letter-spacing:0.08em;
+  }
+
+  @media (max-width:600px){
+    .tier{grid-template-columns:1fr;}
+    h1{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="titlebar">
+      <span><span class="dot">●</span> DOC—EPH</span>
+      <span>REV 0 · DEVICE-AGNOSTIC</span>
+    </div>
+    <div class="titlemain">
+      <h1>Eph <span class="accent">/ Spec v0</span></h1>
+      <p class="subhead" style="font-family:var(--mono); font-size:11px; letter-spacing:0.1em; color:var(--amber-dim); text-transform:uppercase; margin-bottom:4px;">: eph it :</p>
+      <p class="subhead">Spec-driven scaffold for building throwaway-to-persistent apps fast, with AI ride-along as a first-class citizen. Built for constrained connectivity and solo iteration — runs great from a phone, works just as well on desktop. Not a framework — a set of Legos assembled per app, scoped to expected lifespan.</p>
+      <div class="metarow">
+        <span><b>STATUS</b> Draft — pre-orchestration handoff</span>
+        <span><b>PARTS</b> 14 included / 7 excluded / 1 deferred</span>
+        <span><b>TIERS</b> 3</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wireframe-panel">
+    <div class="wireframe-panel-label">FIG.01 — ASSEMBLY FIELD: PARTS MATERIALIZE, HOLD, DISSOLVE, REPEAT</div>
+    <div id="wireframe-mount"></div>
+  </div>
+
+  <!-- TIERS -->
+  <div class="section">
+    <div class="sechead"><span class="num">§1</span><h2>Tiers — lifespan drives stack, not preference</h2></div>
+
+    <div class="tier">
+      <div class="label">TIER 0<small>hours→1 day</small></div>
+      <p>Single HTML file. Vanilla JS + fetch. No build step. <code>Turso/libSQL WASM</code> in-browser if state needs client-side persistence. Deploy: none, or GitHub Pages static.</p>
+    </div>
+
+    <div class="tier">
+      <div class="label">TIER 1<small>days→1 week</small></div>
+      <p>SvelteKit alone — no Express, <code>+server.js</code> routes are the API layer. Vite 8 for WS streaming. Deploy: static build + one Cloudflare Worker for the dynamic endpoint; VPS only if persistent background state is required.</p>
+    </div>
+
+    <div class="tier">
+      <div class="label">TIER 2<small>persists / matters</small></div>
+      <p>Next + SQLite (libSQL) — no ORM by default. Raw SQL, <code>Kysely</code>, or DSANDSL-stripped if leaning on it across apps. Hand-built and reviewed, not spec-looped. Technical debt tradeoffs apply here; they don't at Tier 0/1.</p>
+    </div>
+  </div>
+
+  <!-- LEGOS -->
+  <div class="section">
+    <div class="sechead"><span class="num">§2</span><h2>The Legos — bill of materials</h2></div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-01</span><h3>AI ride-along / tool registry</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li><b>Build-time:</b> AST walker (acorn) over route files → parses JSDoc tool-block → emits JSON tool manifest. Reuses TADA's pattern.</li>
+        <li><b>Runtime:</b> ARIA + custom data-attrs as UI-awareness layer — "AI is a screen reader."</li>
+        <li><b>Meta-tools:</b> navigate, event, api, annotate, lightbox, save-macro, stop (caps registry bloat).</li>
+        <li>Portable across Tier 0/1 — vanilla JS + DOM APIs, no framework dependency.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-02</span><h3>DB adapter</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>libSQL client, local file by default. <code>syncUrl</code> → Turso Cloud opt-in only.</li>
+        <li>Native vector search + FTS (Tantivy) built into Turso Database — covers semantic + full-text without extra pieces.</li>
+        <li>Graph modeling: adjacency table + recursive CTEs. Real graph work deferred to CogOS/HelixDB.</li>
+        <li>Sync conflict resolution: last-write-wins at row level. Flag if an app ever goes multi-writer.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-03</span><h3>Webhooks — in / out, rich</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>In: triggers self-heal pipeline (L-06), external event ingestion.</li>
+        <li>Out: notify/alert dispatch — push, webhook-out, in-app flag for next open.</li>
+        <li>Ingestion/polling (ADS-B, prices, solar, etc.) lives here: poll → normalize → diff-against-last-state → store → maybe-alert.</li>
+        <li>Change-detection named explicitly — core of every situation-monitor use case.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-04</span><h3>Secrets / config management</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Local secrets store, explicitly outside the AI tool registry's read/write boundary.</li>
+        <li>No env-baked-at-build for anything rebuilt often — defeats the point of ephemeral.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-05</span><h3>Rate-limit / cache layer</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><p>TTL cache wrapping the fetch tool. Default-on for any external API call the tool registry makes — prevents an afternoon app from getting banned or billed.</p></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-06</span><h3>Self-healing pipeline</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><p>AI can't answer → opens GitHub issue → triage agent evaluates → spins feature branch → generates PR → human review. Packaged as its own reusable Lego, not reimplemented per app.</p></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-07</span><h3>Offline / connectivity handling</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><p>Queue-and-retry for writes, stale-while-revalidate for reads. Built for spotty connectivity as the default, not the edge case.</p></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-08</span><h3>UI kit + theme builder</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Fork shadcn (not DaisyUI) — copy-into-repo by design, no dependency to vendor/fight.</li>
+        <li>Trim to 8–10 owned primitives: Card, Modal, DataTable, Calendar, Chart (Apache ECharts + echarts-gl — wide series coverage plus WebGL 3D/globe out of the box; not scoped to one problem, heavier is fine here since ephemeral apps get refactored down later if they ever need to), CardFeed, +2–3 TBD.</li>
+        <li>Theme builder = tokens only (color, spacing, radius, shadow, font). Primitives read tokens, never hardcode classes — reskin = edit one file + regenerate.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-09</span><h3>Observability</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><p>errplay generalized from client-error-capture into a small always-on ingest endpoint + dashboard, reusable per app. Already dogfooded — most proven piece in the kit.</p></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-10</span><h3>Graph modeling</h3><span class="stamp deferred">Deferred</span></div>
+      <div class="bombody"><p>Not rejected — deferred. Adjacency table + recursive CTEs cover current needs. Real graph modeling stays scoped to CogOS/HelixDB until this kit has a genuine multi-hop use case.</p></div>
+    </div>
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-11</span><h3>Canvas / simulation (three.js)</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Never a Tier 1 default — opt-in per app, not bundled.</li>
+        <li>Covers 3D charts, spatial/graph visualization, and general animation or simulation canvas work.</li>
+        <li>Chart primitive (L-08) already covers 3D/WebGL via echarts-gl — L-11 is for non-chart spatial work: custom scenes, simulation, spatial UI, animation.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-12</span><h3>Audio</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Analysis: native Web Audio <code>AnalyserNode</code> — FFT/waveform data, no library needed.</li>
+        <li>Tone generation, synthesis, effects: <code>Tone.js</code>.</li>
+        <li>Speech-to-text: out of scope for now — device keyboard/dictation already covers it on Android; revisit only if a real gap shows up.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-13</span><h3>Media capture — webcam / mic / system audio</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li><code>getUserMedia</code> for webcam + microphone, <code>getDisplayMedia</code> for system audio.</li>
+        <li>Standard browser APIs — identical on desktop and mobile, no platform-specific code.</li>
+        <li>Capture stays separate from L-12: this produces the stream, L-12 consumes/analyzes it.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-14</span><h3>State (nanostores)</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Opinionated on purpose — one state primitive across all tiers, so an app author (or the orchestrator) never re-solves this per app. Atom / map / computed is the whole vocabulary: no reducers, no actions boilerplate, no provider wrapping.</li>
+        <li>Implements Svelte's store contract natively — same primitive works unmodified in Tier 0 vanilla and Tier 1 SvelteKit, no adapter layer.</li>
+        <li>Built-in persistent store covers L-04-adjacent config/local persistence; built-in async computed store covers L-03's ingestion/polling state chains — not hand-rolled per app.</li>
+        <li>Excludes: global Redux/Zustand-style shared-schema state stores — see §4.</li>
+      </ul></div>
+    </div>
+
+    <div class="bom">
+      <div class="bomhead"><span class="part-id">L-15</span><h3>Event bus / IPC</h3><span class="stamp">Included</span></div>
+      <div class="bombody"><ul>
+        <li>Separate from L-14 on purpose: state answers "what is true right now" (queryable, has a value at rest); events answer "something happened" (transient, meaningless to query after the fact unless something explicitly recorded it).</li>
+        <li>Native <code>EventTarget</code> or a small custom emitter — zero dependency, same portability guarantee as L-01/L-14: identical primitive in Tier 0 vanilla and Tier 1 SvelteKit.</li>
+        <li>This is the actual answer to "how do Legos talk to each other" — L-03's webhook fire, L-07's connectivity-restored, L-06's critic-passed all emit here rather than being wired Lego-to-Lego directly, which would recouple everything.</li>
+        <li>Anti-pattern to avoid: don't poll a state atom to detect an action, and don't store a transient event as a never-cleared state flag — that's each primitive doing the other's job.</li>
+      </ul></div>
+    </div>
+
+  </div>
+
+  <!-- DEPLOY DEFAULTS -->
+  <div class="section">
+    <div class="sechead"><span class="num">§3</span><h2>Deploy defaults</h2></div>
+    <div class="flowlist">
+      <div class="flowitem"><span class="tag">Default</span><p>GitHub Pages (free) + GitHub Actions build + Cloudflare for domain.</p></div>
+      <div class="flowitem"><span class="tag">Escalate</span><p>Cloudflare Worker — only when a dynamic endpoint is unavoidable.</p></div>
+      <div class="flowitem"><span class="tag">Escalate</span><p>VPS — only when persistent always-on state (L-03 ingestion scheduler, etc.) is required. Not a default.</p></div>
+    </div>
+  </div>
+
+  <!-- EXCLUDED -->
+  <div class="section">
+    <div class="sechead"><span class="num">§4</span><h2>Explicitly excluded</h2></div>
+    <p class="subhead" style="margin-bottom:16px;">Decisions made in the negative — not gaps, deliberate exclusions. Don't reintroduce without re-litigating.</p>
+
+    <div class="exrow"><div class="exname">PRISMA / ORMs by default</div><p>Dropped for silently unsupported Postgres interval/datatype behavior in a revenue-attribution context — unacceptable where precision matters. No ORM is the default across all tiers; Kysely / DSANDSL-stripped are opt-in exceptions only.</p></div>
+
+    <div class="exrow"><div class="exname">EXPRESS as default pairing w/ SvelteKit</div><p>Redundant — <code style="font-family:var(--mono);color:var(--amber);">+server.js</code> is the API layer. Only reintroduce for genuine deploy-lifecycle decoupling or a WS case SvelteKit/Vite can't cleanly own.</p></div>
+
+    <div class="exrow"><div class="exname">DAISYUI</div><p>Vendored Tailwind plugin fights the fork-and-own workflow. shadcn is the fork target instead.</p></div>
+
+    <div class="exrow"><div class="exname">MYSQL</div><p>Contradicts the single-writer, low-dependency default. SQLite/libSQL is default; multi-writer server DB is a Tier-2-only escalation if ever actually needed.</p></div>
+
+    <div class="exrow"><div class="exname">TYPESCRIPT</div><p>JS + JSDoc for IDE hinting, no compile-time checking, no exceptions.</p></div>
+
+    <div class="exrow"><div class="exname">GRAPH DB as a kit Lego</div><p>See L-10 — deferred, not rejected.</p></div>
+
+    <div class="exrow"><div class="exname">GLOBAL STATE STORES (Redux/Zustand-style shared schema)</div><p>Would force every Lego to agree on one shared shape — contradicts the point of L-14. Nanostores' atomic model (independent atoms per concern) is the default instead.</p></div>
+  </div>
+
+  <!-- TESTING & LINTING -->
+  <div class="section">
+    <div class="sechead"><span class="num">§5</span><h2>Testing &amp; linting — two different disciplines</h2></div>
+
+    <div class="tier">
+      <div class="label">LINTING<small>structural / AST</small></div>
+      <p>Zero-tolerance, rigid by design — checking form, not judging outcomes. Enforces L-01's contract directly: nothing passes the pipeline without a JSDoc tool block on every route, or without required ARIA + data-attrs on every interactive element. Rigidity is safe here specifically because there's no solution-space diversity worth preserving on a yes/no structural question.</p>
+    </div>
+
+    <div class="tier">
+      <div class="label">TESTING<small>behavioral / outcome</small></div>
+      <p>Two-layer, both outcome-based, neither prescribes mechanism:</p>
+      <ul style="margin:10px 0 0; padding-left:18px; font-size:13.5px;">
+        <li style="margin-bottom:6px;"><b style="color:var(--amber);">Lego contract tests</b> — ship with each Lego, black-box its boundary (given real inputs, does it produce the promised behavior). Reused unchanged by every app that pulls the Lego in.</li>
+        <li><b style="color:var(--amber);">App-level e2e</b> — written per app, tests the assembled flow only. No unit tests except proven-sticky regressions once a failure point is shown to recur — that's the deliberate exception, not the default.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPEN ITEMS -->
+  <div class="section">
+    <div class="sechead"><span class="num">§6</span><h2>Open items</h2></div>
+    <ul class="openlist">
+      <li><span class="box"></span> JSDoc tool-block syntax — confirm v1-stable or still shifting.</li>
+      <li><span class="box"></span> UI primitive list — finalize the 8–10 beyond the 6 named in L-08.</li>
+      <li><span class="box"></span> Turso Sync (CDC-based) vs classic embedded replicas — check before committing L-02's sync mechanism.</li>
+      <li><span class="box"></span> Scheduler mechanism for L-03 when app is Tier 0/1 and not backed by a VPS — on-device cron is unreliable when app isn't foregrounded.</li>
+    </ul>
+  </div>
+
+  <!-- COPY BOX -->
+  <div class="copysection">
+    <div class="copyhead">
+      <h2>Raw spec — copy for LLM handoff</h2>
+      <button class="copybtn" id="copybtn" onclick="copyRaw()">Copy</button>
+    </div>
+    <textarea id="raw" readonly spellcheck="false"># Ephemeral App Kit — v0 Spec
+
+Spec-driven scaffold for building throwaway-to-persistent apps fast, with AI-ride-along as a first-class citizen. Built for constrained connectivity and solo iteration — runs great from a phone, works just as well on desktop. Not a framework — a set of Legos you assemble per app, scoped to the app's expected lifespan.
+
+## Tiers (lifespan drives stack, not preference)
+
+Tier 0 — hours to a day
+Single HTML file. Vanilla JS + fetch. No build step. Turso/libSQL WASM in-browser if state needs to persist client-side. Deploy: none, or GitHub Pages static.
+
+Tier 1 — days to a week
+SvelteKit alone (no Express — +server.js routes are the API layer). Vite 8 for WS streaming. Deploy: static build + single Cloudflare Worker for the one dynamic endpoint, VPS only if persistent background state is required.
+
+Tier 2 — persists, actually matters
+Next + SQLite (libSQL) — no ORM by default. Raw SQL, or Kysely as a thin query builder if complexity demands it, or DSANDSL-stripped if leaning on it across multiple apps. Prisma is out — silently unsupported datatype/interval behavior on Postgres in a revenue-attribution context is disqualifying. Hand-built/heavily reviewed, not spec-looped into existence. Technical debt tradeoffs apply here; they don't at Tier 0/1.
+
+## The Legos
+
+Each is a standalone, framework-agnostic package. An app pulls in only what it needs.
+
+L-01 AI ride-along / tool registry
+- Build-time: AST walker (acorn) over route files → parses custom JSDoc tool-block → emits JSON tool manifest. Reuses TADA's existing pattern.
+- Runtime: ARIA + custom data-attrs as the UI-awareness layer ("AI is a screen reader").
+- Meta-tools: navigate, event (fire clicks etc.), api (fetch/interact with endpoints), annotate, lightbox, save-macro, stop (caps registry bloat).
+- Portable across Tier 0/1 — vanilla JS + DOM APIs, no framework dependency.
+
+L-02 DB adapter
+- libSQL client, local file by default.
+- syncUrl → Turso Cloud is opt-in only, for apps that need cross-device persistence. Ephemeral on-device apps skip cloud sync entirely.
+- Native vector search + FTS (Tantivy) built into Turso Database now — covers semantic + full-text search without extra pieces.
+- Graph: explicitly deferred. Model as adjacency table + recursive CTEs unless a real multi-hop use case shows up. CogOS/HelixDB is the testbed for actual graph needs, not this kit.
+- Conflict resolution if synced: last-write-wins at row level. Fine for solo-dev use, flag if an app ever goes multi-writer.
+
+L-03 Webhooks (in/out, rich)
+- In: triggers self-heal pipeline (L-06), external event ingestion.
+- Out: notify/alert dispatch (push, webhook-out, in-app flag for next open).
+- Ingestion/polling for external APIs (ADS-B, prices, solar, etc.) lumped in here — poll → normalize → diff-against-last-state → store → maybe-alert.
+- Change-detection is a named sub-piece of this, not buried — "what changed since I last looked" is the core of every situation-monitor use case.
+
+L-04 Secrets/config management
+- Small local secrets store, explicitly outside the AI tool registry's read/write boundary.
+- No env-baked-at-build for anything that gets rebuilt often (defeats the point of ephemeral).
+
+L-05 Rate-limit / cache layer
+- TTL cache wrapping the fetch tool. Default-on for any external API call the tool registry makes — prevents an afternoon app from getting you banned or billed.
+
+L-06 Self-healing pipeline
+- AI can't answer → opens GitHub issue → triage agent evaluates → spins feature branch → generates PR → you review.
+- Packaged as its own reusable Lego, not reimplemented per app.
+
+L-07 Offline/connectivity handling
+- Queue-and-retry for writes, stale-while-revalidate for reads. Built for spotty connectivity as the default, not the edge case.
+
+L-08 UI kit + theme builder
+- Fork shadcn (not DaisyUI — shadcn is copy-into-repo by design already, no dependency to vendor/fight).
+- Trim to 8-10 owned primitives: Card, Modal, DataTable, Calendar, Chart (Apache ECharts + echarts-gl - wide series coverage plus WebGL 3D/globe out of the box; not scoped to one problem, heavier is fine since ephemeral apps get refactored down later if they ever need to), CardFeed, + 2-3 TBD as apps reveal needs.
+- Theme builder = tokens only (color scale, spacing, radius, shadow, font), single config file. Primitives read tokens, never hardcode classes — reskin = edit one file + regenerate, not touch every component.
+
+L-09 Observability
+- errplay generalized from client-error-capture into a small always-on ingest endpoint + dashboard, reusable per app. Already dogfooded, most proven piece in the kit.
+
+L-10 Graph modeling — DEFERRED, not rejected
+- Adjacency table + recursive CTEs cover current needs. CogOS/HelixDB is the testbed for real graph modeling until this kit has a genuine multi-hop use case.
+
+L-11 Canvas / simulation (three.js)
+- Never a Tier 1 default — opt-in per app, not bundled.
+- Covers 3D charts, spatial/graph visualization, and general animation or simulation canvas work.
+- Chart primitive (L-08) already covers 3D/WebGL via echarts-gl - L-11 is for non-chart spatial work: custom scenes, simulation, spatial UI, animation.
+
+L-12 Audio
+- Analysis: native Web Audio AnalyserNode — FFT/waveform data, no library needed.
+- Tone generation, synthesis, effects: Tone.js.
+- Speech-to-text: out of scope for now — device keyboard/dictation already covers it on Android; revisit only if a real gap shows up.
+
+L-13 Media capture — webcam / mic / system audio
+- getUserMedia for webcam + microphone, getDisplayMedia for system audio.
+- Standard browser APIs — identical on desktop and mobile, no platform-specific code.
+- Capture stays separate from L-12: this produces the stream, L-12 consumes/analyzes it.
+
+L-14 State (nanostores)
+- Opinionated on purpose — one state primitive across all tiers, so an app author (or the orchestrator) never re-solves this per app. Atom / map / computed is the whole vocabulary: no reducers, no actions boilerplate, no provider wrapping.
+- Implements Svelte's store contract natively — same primitive works unmodified in Tier 0 vanilla and Tier 1 SvelteKit, no adapter layer.
+- Built-in persistent store covers L-04-adjacent config/local persistence; built-in async computed store covers L-03's ingestion/polling state chains — not hand-rolled per app.
+- Excludes: global Redux/Zustand-style shared-schema state stores — see Explicitly excluded.
+
+L-15 Event bus / IPC
+- Separate from L-14 on purpose: state answers "what is true right now" (queryable, has a value at rest); events answer "something happened" (transient, meaningless to query after the fact unless something explicitly recorded it).
+- Native EventTarget or a small custom emitter — zero dependency, same portability guarantee as L-01/L-14: identical primitive in Tier 0 vanilla and Tier 1 SvelteKit.
+- This is the actual answer to "how do Legos talk to each other" — L-03's webhook fire, L-07's connectivity-restored, L-06's critic-passed all emit here rather than being wired Lego-to-Lego directly, which would recouple everything.
+- Anti-pattern to avoid: don't poll a state atom to detect an action, and don't store a transient event as a never-cleared state flag — that's each primitive doing the other's job.
+
+## Deploy defaults
+- Default: GitHub Pages (free) + GitHub Actions build + Cloudflare for domain.
+- Escalate to Worker only when a dynamic endpoint is unavoidable.
+- Escalate to VPS only when persistent always-on state (L-03 ingestion, etc.) is required. Not a default.
+
+## Explicitly excluded
+
+Decisions made in the negative — not gaps, deliberate exclusions. Don't let a future pass reintroduce these without re-litigating.
+
+- Prisma / ORMs by default. Prisma dropped for silently unsupported Postgres interval/datatype behavior in a revenue-attribution context — unacceptable where precision matters. No ORM is the default across all tiers; Kysely or DSANDSL-stripped are opt-in exceptions only, not replacements.
+- Express as a default pairing with SvelteKit. Redundant — +server.js is the API layer. Only reintroduce Express (or a separate process) for genuine deploy-lifecycle decoupling or a WS case SvelteKit/Vite can't cleanly own.
+- DaisyUI. Vendored Tailwind plugin fights the fork-and-own workflow. shadcn (copy-into-repo by design) is the fork target instead.
+- MySQL. Contradicts the single-writer, low-dependency default. SQLite/libSQL is the default; multi-writer server DB is a Tier-2-only escalation if it's ever actually needed.
+- TypeScript. JS + JSDoc for IDE hinting, no compile-time checking, no exceptions.
+- Graph DB as a kit Lego. Not rejected, deferred — adjacency table + recursive CTEs cover current needs. HelixDB/real graph modeling stays scoped to CogOS until this kit has a genuine multi-hop use case.
+- Global state stores (Redux/Zustand-style shared schema). Would force every Lego to agree on one shared shape — contradicts the point of L-14. Nanostores' atomic model (independent atoms per concern) is the default instead.
+
+## Testing & linting — two different disciplines
+
+Linting (structural / AST) — zero-tolerance, rigid by design. Checks form, not outcomes. Enforces L-01's contract directly: nothing passes the pipeline without a JSDoc tool block on every route, or without required ARIA + data-attrs on every interactive element. Rigidity is safe here specifically because there's no solution-space diversity worth preserving on a yes/no structural question.
+
+Testing (behavioral / outcome) — two-layer, both outcome-based, neither prescribes mechanism:
+- Lego contract tests: ship with each Lego, black-box its boundary (given real inputs, does it produce the promised behavior). Reused unchanged by every app that pulls the Lego in.
+- App-level e2e: written per app, tests the assembled flow only. No unit tests except proven-sticky regressions once a failure point is shown to recur — that's the deliberate exception, not the default.
+
+## Open items
+- [ ] JSDoc tool-block syntax: confirm v1-stable or still shifting.
+- [ ] UI primitive list: finalize the 8-10 beyond the 6 named above.
+- [ ] Turso Sync (CDC-based) vs classic embedded replicas — worth a follow-up check before committing the DB adapter's sync mechanism.
+- [ ] Scheduler mechanism for L-03 when app is Tier 0/1 and not backed by a VPS (on-device cron is unreliable when app isn't foregrounded).</textarea>
+  </div>
+
+  <footer>EPH—REV0 · GENERATED FOR ORCHESTRATOR HANDOFF · NOT A FRAMEWORK, A KIT</footer>
+
+</div>
+
+<script>
+function copyRaw(){
+  const ta = document.getElementById('raw');
+  ta.select();
+  ta.setSelectionRange(0, 999999);
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.getElementById('copybtn');
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); }, 1600);
+  });
+}
+
+(function initAssemblyField(){
+  const mount = document.getElementById('wireframe-mount');
+  if(!mount) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const canvas = document.createElement('canvas');
+  canvas.style.display = 'block';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  mount.appendChild(canvas);
+
+  const gl = canvas.getContext('webgl2', { alpha:true, antialias:true });
+  if(!gl){ mount.style.display = 'none'; return; }
+
+  const vertSrc = `#version 300 es
+  const vec2 pos[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));
+  void main(){ gl_Position = vec4(pos[gl_VertexID], 0.0, 1.0); }
+  `;
+
+  // raymarched field of small boxes -- each cell runs its own materialize/dissolve
+  // cycle on a random phase. this is the doc's thesis as a picture: parts
+  // assembled per app, held for their scoped lifespan, then gone.
+  const fragSrc = `#version 300 es
+  precision highp float;
+  uniform vec2 uRes;
+  uniform float uTime;
+  out vec4 fragColor;
+
+  float hash31(vec3 p){
+    p = fract(p*0.3183099+0.1);
+    p *= 17.0;
+    return fract(p.x*p.y*p.z*(p.x+p.y+p.z));
+  }
+
+  float sdBox(vec3 p, vec3 b){
+    vec3 q = abs(p)-b;
+    return length(max(q,0.0))+min(max(q.x,max(q.y,q.z)),0.0);
+  }
+
+  float cellHash;
+
+  float map(vec3 p){
+    vec3 c = vec3(1.55);
+    vec3 cellIndex = floor((p+0.5*c)/c);
+    vec3 q = mod(p+0.5*c, c) - 0.5*c;
+    float h = hash31(cellIndex);
+    cellHash = h;
+    float phase = uTime*0.3 + h*6.2831853;
+    float life = 0.5+0.5*sin(phase);
+    life = smoothstep(0.12, 0.88, life);
+    float size = mix(0.03, 0.5, life);
+    return sdBox(q, vec3(size));
+  }
+
+  vec3 calcNormal(vec3 p){
+    vec2 e = vec2(0.0015, 0.0);
+    return normalize(vec3(
+      map(p+e.xyy)-map(p-e.xyy),
+      map(p+e.yxy)-map(p-e.yxy),
+      map(p+e.yyx)-map(p-e.yyx)
+    ));
+  }
+
+  void main(){
+    vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
+
+    float camAngle = uTime*0.09;
+    vec3 ro = vec3(sin(camAngle)*5.2, 1.4+sin(uTime*0.07)*0.5, cos(camAngle)*5.2);
+    vec3 ta = vec3(0.0);
+    vec3 fwd = normalize(ta-ro);
+    vec3 right = normalize(cross(fwd, vec3(0.0,1.0,0.0)));
+    vec3 up = cross(right, fwd);
+    vec3 rd = normalize(fwd*1.6 + uv.x*right + uv.y*up);
+
+    float t = 0.0;
+    float glow = 0.0;
+    vec3 col = vec3(0.0);
+    bool hit = false;
+
+    for(int i=0;i<80;i++){
+      vec3 p = ro + rd*t;
+      float d = map(p);
+      glow += 0.0022 / (0.02 + d*d*3.0);
+      if(d < 0.0012){ hit = true; break; }
+      t += d*0.85;
+      if(t > 14.0) break;
+    }
+
+    vec3 amber = vec3(0.909, 0.639, 0.239);
+    vec3 brightAmber = vec3(0.95, 0.78, 0.47);
+
+    if(hit){
+      vec3 p = ro + rd*t;
+      vec3 n = calcNormal(p);
+      float fres = pow(1.0 - max(dot(n, -rd), 0.0), 2.2);
+      float rim = smoothstep(0.35, 1.0, fres);
+      float sparkle = smoothstep(0.985, 1.0, hash31(floor(p*40.0)+floor(uTime*3.0)));
+      col = mix(vec3(0.04,0.03,0.02), brightAmber, rim*0.9 + sparkle*0.4);
+      col += brightAmber * sparkle * 0.6;
+    }
+
+    col += amber * glow * 0.16;
+
+    float alpha = clamp(length(col)*0.9, 0.0, 1.0);
+    fragColor = vec4(col, alpha);
+  }
+  `;
+
+  function compile(type, src){
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if(!gl.getShaderParameter(sh, gl.COMPILE_STATUS)){
+      console.warn('shader compile error', gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+
+  const vs = compile(gl.VERTEX_SHADER, vertSrc);
+  const fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+  if(!vs || !fs) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+    console.warn('program link error', gl.getProgramInfoLog(prog));
+    return;
+  }
+  gl.useProgram(prog);
+
+  const uRes = gl.getUniformLocation(prog, 'uRes');
+  const uTime = gl.getUniformLocation(prog, 'uTime');
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  function resize(){
+    const r = mount.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round((r.width||220) * dpr));
+    const h = Math.max(1, Math.round((r.height||220) * dpr));
+    if(canvas.width !== w || canvas.height !== h){
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+    }
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function renderFrame(time){
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform1f(uTime, time);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  if(reduceMotion){
+    renderFrame(1.2);
+    return;
+  }
+
+  let start = null;
+  function loop(ts){
+    if(start === null) start = ts;
+    const t = (ts - start) * 0.001;
+    renderFrame(t);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
