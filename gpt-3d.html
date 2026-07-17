@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#020713">
+  <title>Astral Energy Source Well</title>
+  <style>
+    :root { --green:#46ffb0; --blue:#4aa8ff; --gold:#ffd36b; }
+    * { box-sizing:border-box; }
+    html,body {
+      margin:0; width:100%; height:100%; overflow:hidden;
+      background:radial-gradient(circle at 50% 42%,#08203a 0%,#020713 58%,#000 100%);
+      color:#fff; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      touch-action:none;
+    }
+    canvas { display:block; width:100%; height:100%; }
+    #hud {
+      position:fixed; inset:0; z-index:2; pointer-events:none;
+      padding:max(15px,env(safe-area-inset-top)) max(15px,env(safe-area-inset-right))
+              max(15px,env(safe-area-inset-bottom)) max(15px,env(safe-area-inset-left));
+      display:flex; flex-direction:column; justify-content:space-between;
+    }
+    h1 {
+      margin:0; max-width:760px; font-size:clamp(21px,5.5vw,48px);
+      letter-spacing:.08em; text-transform:uppercase; line-height:1.04;
+      background:linear-gradient(90deg,var(--green),var(--blue),var(--gold));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter:drop-shadow(0 0 16px rgba(74,168,255,.32));
+    }
+    #subtitle {
+      margin:.6rem 0 0; max-width:40ch; color:rgba(255,255,255,.7);
+      font-size:clamp(12px,2.8vw,15px); line-height:1.45;
+      text-shadow:0 2px 12px #000;
+    }
+    #hint {
+      align-self:flex-start; border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,5,16,.48); backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px); padding:9px 13px; border-radius:999px;
+      color:rgba(255,255,255,.74); font-size:11px; letter-spacing:.08em;
+      text-transform:uppercase; box-shadow:inset 0 0 24px rgba(70,255,176,.06);
+    }
+    #error {
+      display:none; position:fixed; z-index:20; left:50%; top:50%;
+      transform:translate(-50%,-50%); width:min(600px,88vw);
+      padding:18px; border-radius:16px; background:rgba(8,5,18,.96);
+      border:1px solid rgba(255,211,107,.35); box-shadow:0 20px 60px rgba(0,0,0,.6);
+      white-space:pre-wrap; line-height:1.45; font-size:13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <div>
+      <h1>Astral Energy Source Well</h1>
+      <p id="subtitle">A living convergence where memory, intention, and possibility condense into flowing light.</p>
+    </div>
+    <div id="hint">drag to orbit · pinch to zoom · tap to pulse</div>
+  </div>
+  <div id="error"></div>
+
+  <script type="module">
+    const errorBox = document.getElementById("error");
+
+    function showError(title, error) {
+      console.error(title, error);
+      errorBox.style.display = "block";
+      errorBox.textContent =
+        title + "\n\n" +
+        (error?.message || String(error)) +
+        "\n\nCheck the browser console for more detail.";
+    }
+
+    window.addEventListener("error", event => {
+      if (!errorBox.textContent) showError("The artwork could not start.", event.error || event.message);
+    });
+
+    window.addEventListener("unhandledrejection", event => {
+      if (!errorBox.textContent) showError("A required module or WebGL operation failed.", event.reason);
+    });
+
+    let THREE;
+    try {
+      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js");
+    } catch (error) {
+      showError("Three.js failed to load from the CDN.", error);
+      throw error;
+    }
+
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+      });
+    } catch (error) {
+      showError("WebGL could not initialize in this browser.", error);
+      throw error;
+    }
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    document.body.prepend(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x020713, 0.043);
+
+    const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.1, 160);
+
+    let yaw = 0;
+    let pitch = 0.42;
+    let distance = 11.5;
+    let targetYaw = yaw;
+    let targetPitch = pitch;
+    let targetDistance = distance;
+    const cameraTarget = new THREE.Vector3(0, 0.7, 0);
+
+    function updateCamera() {
+      yaw += (targetYaw - yaw) * 0.075;
+      pitch += (targetPitch - pitch) * 0.075;
+      distance += (targetDistance - distance) * 0.075;
+
+      const cp = Math.cos(pitch);
+      camera.position.set(
+        cameraTarget.x + Math.sin(yaw) * cp * distance,
+        cameraTarget.y + Math.sin(pitch) * distance,
+        cameraTarget.z + Math.cos(yaw) * cp * distance
+      );
+      camera.lookAt(cameraTarget);
+    }
+
+    const sharedUniforms = {
+      uTime: { value: 0 },
+      uPulse: { value: 0 }
+    };
+
+    // Star field
+    {
+      const count = 2400;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const palette = [
+        new THREE.Color("#46ffb0"),
+        new THREE.Color("#4aa8ff"),
+        new THREE.Color("#ffd36b")
+      ];
+
+      for (let i = 0; i < count; i++) {
+        const radius = 18 + Math.random() * 50;
+        const azimuth = Math.random() * Math.PI * 2;
+        const polar = Math.acos(2 * Math.random() - 1);
+
+        positions[i * 3] = Math.sin(polar) * Math.cos(azimuth) * radius;
+        positions[i * 3 + 1] = Math.cos(polar) * radius;
+        positions[i * 3 + 2] = Math.sin(polar) * Math.sin(azimuth) * radius;
+
+        const color = palette[i % 3].clone().multiplyScalar(0.3 + Math.random() * 0.85);
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+      }
+
+      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+      scene.add(new THREE.Points(
+        geometry,
+        new THREE.PointsMaterial({
+          size: 0.075,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.92,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending
+        })
+      ));
+    }
+
+    // Flowing energy pool
+    const poolMaterial = new THREE.ShaderMaterial({
+      uniforms: sharedUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+
+        void main() {
+          vUv = uv;
+          vec3 p = position;
+          float radius = length(p.xy);
+          p.z += sin(radius * 9.0 - uTime * 3.0) * 0.045;
+          p.z += sin((p.x + p.y) * 5.0 + uTime * 2.0) * 0.018;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uPulse;
+
+        void main() {
+          vec2 p = vUv - 0.5;
+          float radius = length(p) * 2.0;
+          float angle = atan(p.y, p.x);
+
+          float waves = 0.5 + 0.5 * sin(
+            34.0 * radius - 6.0 * uTime +
+            3.0 * sin(angle * 6.0 + uTime)
+          );
+
+          float spiral = 0.5 + 0.5 * sin(
+            12.0 * angle - 22.0 * radius + 4.0 * uTime
+          );
+
+          float pulseRadius = fract(uPulse) * 1.3;
+          float pulseRing = exp(-abs(radius - pulseRadius) * 34.0) * step(0.001, uPulse);
+
+          vec3 blue = vec3(0.04, 0.35, 1.0);
+          vec3 green = vec3(0.05, 1.0, 0.42);
+          vec3 gold = vec3(1.0, 0.55, 0.08);
+
+          vec3 color = mix(blue, green, spiral);
+          color = mix(color, gold, pow(max(0.0, 1.0 - radius), 5.0));
+          color *= 0.28 + 1.6 * waves;
+          color += gold * pulseRing * 2.5;
+          color += green / (0.08 + 20.0 * radius * radius);
+
+          float alpha = smoothstep(1.0, 0.02, radius) * (0.45 + 0.55 * waves);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `
+    });
+
+    const pool = new THREE.Mesh(
+      new THREE.CircleGeometry(3.3, 160),
+      poolMaterial
+    );
+    pool.rotation.x = -Math.PI / 2;
+    pool.position.y = -0.8;
+    scene.add(pool);
+
+    // Rising source column
+    const columnMaterial = new THREE.ShaderMaterial({
+      uniforms: sharedUniforms,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        varying vec2 vUv;
+        uniform float uTime;
+
+        void main() {
+          vUv = uv;
+          vec3 p = position;
+          float twist = p.y * 1.6 + uTime * 1.4;
+          float strength = 0.16 + 0.10 * sin(p.y * 3.0 - uTime * 2.0);
+          p.x += sin(twist * 2.0) * strength;
+          p.z += cos(twist * 1.7) * strength;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }
+      `,
+      fragmentShader: `
+        precision highp float;
+
+        varying vec2 vUv;
+        uniform float uTime;
+        uniform float uPulse;
+
+        void main() {
+          float bands = 0.5 + 0.5 * sin(
+            vUv.y * 48.0 - uTime * 8.0 +
+            sin(vUv.y * 10.0) * 3.0
+          );
+
+          float edge = pow(max(0.0, 1.0 - abs(vUv.x - 0.5) * 2.0), 2.4);
+          float pulseBand = exp(-abs(vUv.y - fract(uPulse)) * 26.0) * step(0.001, uPulse);
+
+          vec3 blue = vec3(0.04, 0.38, 1.0);
+          vec3 green = vec3(0.05, 1.0, 0.38);
+          vec3 gold = vec3(1.0, 0.62, 0.12);
+
+          vec3 color = mix(blue, green, bands);
+          color = mix(color, gold, pow(vUv.y, 3.0));
+          color += gold * pulseBand * 2.5;
+
+          gl_FragColor = vec4(color, edge * (0.15 + 0.85 * bands));
+        }
+      `
+    });
+
+    const column = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5, 1.05, 7.5, 72, 100, true),
+      columnMaterial
+    );
+    column.position.y = 2.55;
+    scene.add(column);
+
+    // Orbit rings
+    const rings = new THREE.Group();
+    scene.add(rings);
+
+    const ringColors = [0x46ffb0, 0x4aa8ff, 0xffd36b];
+
+    for (let i = 0; i < 7; i++) {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(2.0 + i * 0.48, 0.018 + (i % 2) * 0.01, 8, 180),
+        new THREE.MeshBasicMaterial({
+          color: ringColors[i % 3],
+          transparent: true,
+          opacity: 0.42,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending
+        })
+      );
+
+      ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.45;
+      ring.rotation.y = Math.random() * Math.PI;
+      ring.userData.speed = (i % 2 ? 1 : -1) * (0.3 + i * 0.04);
+      rings.add(ring);
+    }
+
+    // Floating crystals
+    const crystals = new THREE.Group();
+    scene.add(crystals);
+
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const radius = 4.1 + (i % 3) * 0.35;
+
+      const crystal = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.22, 0),
+        new THREE.MeshBasicMaterial({
+          color: ringColors[i % 3],
+          transparent: true,
+          opacity: 0.9
+        })
+      );
+
+      crystal.position.set(
+        Math.cos(angle) * radius,
+        -0.05 + Math.sin(i) * 0.35,
+        Math.sin(angle) * radius
+      );
+      crystal.scale.y = 2.3 + (i % 4) * 0.35;
+      crystal.userData.phase = i * 0.7;
+      crystals.add(crystal);
+    }
+
+    // Flowing particle helix
+    const particleCount = 2800;
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleSeeds = new Float32Array(particleCount);
+    const particleColors = new Float32Array(particleCount * 3);
+
+    const particlePalette = [
+      new THREE.Color("#46ffb0"),
+      new THREE.Color("#4aa8ff"),
+      new THREE.Color("#ffd36b")
+    ];
+
+    for (let i = 0; i < particleCount; i++) {
+      particleSeeds[i] = Math.random();
+      const color = particlePalette[i % 3];
+      particleColors[i * 3] = color.r;
+      particleColors[i * 3 + 1] = color.g;
+      particleColors[i * 3 + 2] = color.b;
+    }
+
+    particleGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(particlePositions, 3)
+    );
+    particleGeometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(particleColors, 3)
+    );
+
+    const particles = new THREE.Points(
+      particleGeometry,
+      new THREE.PointsMaterial({
+        size: 0.06,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.95,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    scene.add(particles);
+
+    scene.add(new THREE.AmbientLight(0x224466, 1.15));
+
+    const centralLight = new THREE.PointLight(0x46ffb0, 24, 18, 2);
+    centralLight.position.set(0, 2, 0);
+    scene.add(centralLight);
+
+    const blueLight = new THREE.PointLight(0x4aa8ff, 12, 20, 2);
+    blueLight.position.set(4, 4, 4);
+    scene.add(blueLight);
+
+    const goldLight = new THREE.PointLight(0xffd36b, 10, 18, 2);
+    goldLight.position.set(-4, 3, -3);
+    scene.add(goldLight);
+
+    function updateParticles(time) {
+      const positions = particleGeometry.attributes.position.array;
+
+      for (let i = 0; i < particleCount; i++) {
+        const seed = particleSeeds[i];
+        const lane = i % 9;
+
+        const height =
+          ((seed * 9.0 + time * (0.34 + 0.03 * lane)) % 9.0) - 1.2;
+
+        const normalizedHeight = Math.min(
+          1,
+          Math.max(0, (height + 1.2) / 9)
+        );
+
+        const taper = 1 - normalizedHeight * 0.82;
+        const radius =
+          0.35 +
+          2.8 * taper +
+          0.2 * Math.sin(seed * 31 + time * 2 + lane);
+
+        const angle =
+          seed * 24 +
+          time * (0.85 + 0.05 * lane) +
+          height * 0.95;
+
+        positions[i * 3] = Math.cos(angle) * radius;
+        positions[i * 3 + 1] = height;
+        positions[i * 3 + 2] = Math.sin(angle) * radius;
+      }
+
+      particleGeometry.attributes.position.needsUpdate = true;
+    }
+
+    let pulse = 0;
+    let dragging = false;
+    let moved = false;
+    let lastX = 0;
+    let lastY = 0;
+    let pinchStart = 0;
+    let pinchDistanceStart = targetDistance;
+
+    const canvas = renderer.domElement;
+
+    canvas.addEventListener("pointerdown", event => {
+      dragging = true;
+      moved = false;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      canvas.setPointerCapture?.(event.pointerId);
+    });
+
+    canvas.addEventListener("pointermove", event => {
+      if (!dragging) return;
+
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+
+      targetYaw -= dx * 0.006;
+      targetPitch = Math.max(
+        -0.15,
+        Math.min(1.15, targetPitch + dy * 0.004)
+      );
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+    });
+
+    canvas.addEventListener("pointerup", () => {
+      if (!moved) pulse = 0.001;
+      dragging = false;
+    });
+
+    canvas.addEventListener(
+      "wheel",
+      event => {
+        event.preventDefault();
+        targetDistance = Math.max(
+          4.8,
+          Math.min(20, targetDistance + event.deltaY * 0.01)
+        );
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchstart",
+      event => {
+        if (event.touches.length === 2) {
+          const dx = event.touches[0].clientX - event.touches[1].clientX;
+          const dy = event.touches[0].clientY - event.touches[1].clientY;
+          pinchStart = Math.hypot(dx, dy);
+          pinchDistanceStart = targetDistance;
+        }
+      },
+      { passive: false }
+    );
+
+    canvas.addEventListener(
+      "touchmove",
+      event => {
+        if (event.touches.length === 2) {
+          event.preventDefault();
+          const dx = event.touches[0].clientX - event.touches[1].clientX;
+          const dy = event.touches[0].clientY - event.touches[1].clientY;
+          const currentPinch = Math.max(1, Math.hypot(dx, dy));
+
+          targetDistance = Math.max(
+            4.8,
+            Math.min(20, pinchDistanceStart * (pinchStart / currentPinch))
+          );
+        }
+      },
+      { passive: false }
+    );
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const time = clock.getElapsedTime();
+      sharedUniforms.uTime.value = time;
+
+      if (pulse > 0) {
+        pulse += 0.018;
+        if (pulse > 1.9) pulse = 0;
+      }
+      sharedUniforms.uPulse.value = pulse;
+
+      column.rotation.y = time * 0.11;
+      pool.rotation.z = -time * 0.05;
+
+      rings.children.forEach((ring, index) => {
+        ring.rotation.z += ring.userData.speed * 0.002;
+        ring.rotation.y += Math.sin(time * 0.2 + index) * 0.0007;
+      });
+
+      crystals.children.forEach(crystal => {
+        crystal.position.y =
+          -0.05 + Math.sin(time * 1.2 + crystal.userData.phase) * 0.32;
+        crystal.rotation.y += 0.008;
+      });
+
+      centralLight.intensity = 22 + Math.sin(time * 2) * 4;
+
+      updateParticles(time);
+      updateCamera();
+      renderer.render(scene, camera);
+    }
+
+    updateCamera();
+    animate();
+
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
+    });
+  </script>
+</body>
+</html>
