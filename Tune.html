@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Ultimate Deployment Matrix</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #030712; color: #f1f5f9; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+        .scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .scrollbar::-webkit-scrollbar-track { background: #0b0f19; }
+        .scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        .scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .code-container { position: relative; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #0f172a; border: 1px solid #334155; font-size: 10px; padding: 4px 10px; border-radius: 4px; color: #38bdf8; cursor: pointer; transition: all 0.2s; font-weight: bold; z-index: 50; }
+        .copy-btn:hover { background: #1e293b; color: #34d399; }
+    </style>
+</head>
+<body class="p-4 md:p-8 scrollbar" x-data="{ 
+    activeTab: 'bios',
+    copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text);
+        alert('Payload successfully copied to system clipboard!');
+    }
+}">
+
+    <!-- MASTER OMNI HEADER -->
+    <header class="max-w-7xl mx-auto mb-6 border-b border-red-500/30 pb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-red-500 animate-ping absolute opacity-75"></span>
+                    <span class="w-3 h-3 rounded-full bg-red-600 relative"></span>
+                    <h1 class="text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-amber-400">AURORA DISASTER RECOVERY & DEPLOYMENT MATRIX</h1>
+                </div>
+                <p class="text-xs text-slate-400 mt-1">Scope: Full Session State Recovery Engine — From Bare-Metal BIOS Flags to Local AI Runtime Environments</p>
+            </div>
+            <div class="text-right text-[11px] text-slate-500 font-bold">
+                PLATFORM: ALIENWARE HIGH-THROUGHPUT SYSTEM INITIALIZER<br>
+                BUILD PROFILE: ZERO-LAG GAMING / BROADCAST MIXING / ML INFERENCE
+            </div>
+        </div>
+    </header>
+
+    <!-- ARCHITECTURE STRUCTURAL TOPOLOGY MATRIX -->
+    <section class="max-w-7xl mx-auto mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-lg">
+            <span class="text-[10px] bg-slate-800 text-cyan-400 font-bold px-2 py-0.5 rounded uppercase">1. Silicon & Storage</span>
+            <p class="text-[11px] text-slate-400 leading-relaxed mt-2">
+                <strong class="text-slate-200">BIOS Target:</strong> Disables Intel DTT and virtualization thermal throttles. <br>
+                <strong class="text-emerald-400">NTFS C: Drive:</strong> Hosts operating system layers and raw game directories to keep kernel-level Anti-Cheat components functional.
+            </p>
+        </div>
+        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-lg">
+            <span class="text-[10px] bg-slate-800 text-amber-400 font-bold px-2 py-0.5 rounded uppercase">2. Driver Enforcement</span>
+            <p class="text-[11px] text-slate-400 leading-relaxed mt-2">
+                Installs <strong class="text-amber-400">NVIDIA Game Ready Drivers (GRD)</strong> instead of Studio paths. Provides structural hotfixes for *Apex Legends* while maintaining support for deep CUDA model scaling.
+            </p>
+        </div>
+        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-lg">
+            <span class="text-[10px] bg-slate-800 text-sky-400 font-bold px-2 py-0.5 rounded uppercase">3. Sound Pipeline</span>
+            <p class="text-[11px] text-slate-400 leading-relaxed mt-2">
+                Separates local voice lanes: Raw input goes directly to Discord/Apex for zero-delay voice comms. Broadcast paths route via <strong class="text-sky-400">FlexASIO Exclusive Mode</strong> into Reaper to prevent system loops.
+            </p>
+        </div>
+        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-lg">
+            <span class="text-[10px] bg-slate-800 text-red-400 font-bold px-2 py-0.5 rounded uppercase">4. Core Ducking Rules</span>
+            <p class="text-[11px] text-slate-400 leading-relaxed mt-2">
+                Forces sidechain compression audio ducking exclusively on the <strong class="text-red-400">Broadcast Mix Engine</strong>. Physical headphone monitoring tracks remain completely clean to protect competitive audio cue tracking.
+            </p>
+        </div>
+    </section>
+
+    <!-- CONTENT AND INTERACTIVE GRID SYSTEM -->
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- SIDE NAVIGATION MATRIX LINKS -->
+        <div class="lg:col-span-1 flex flex-col gap-2">
+            <button @click="activeTab = 'bios'" :class="activeTab === 'bios' ? 'bg-red-950/40 border-red-500 text-red-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>1. BARE-METAL HARDWARE TIER</span>
+                <span class="text-[9px] opacity-60">BIOS MANUAL</span>
+            </button>
+            <button @click="activeTab = 'registry'" :class="activeTab === 'registry' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>2. CORE OS PROVISIONING</span>
+                <span class="text-[9px] opacity-60">POWERSHELL</span>
+            </button>
+            <button @click="activeTab = 'copilot'" :class="activeTab === 'copilot' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>3. COPILOT BACKEND ENGINE</span>
+                <span class="text-[9px] opacity-60">PYTHON</span>
+            </button>
+            <button @click="activeTab = 'audio_layer'" :class="activeTab === 'audio_layer' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>4. FLEXASIO TUNING PROTOCOL</span>
+                <span class="text-[9px] opacity-60">TOML MATRIX</span>
+            </button>
+            <button @click="activeTab = 'reaper_chain'" :class="activeTab === 'reaper_chain' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>5. LOW-LATENCY VST SCHEMA</span>
+                <span class="text-[9px] opacity-60">REAPER FILTERS</span>
+            </button>
+            <button @click="activeTab = 'tensorrt'" :class="activeTab === 'tensorrt' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
+                <span>6. LOCAL TENSORRT-LLM PIPELINE</span>
+                <span class="text-[9px] opacity-60">LINUX CONSOLE</span>
+            </button>
+        </div>
+
+        <!-- MAIN MATRIX INTERACTIVE WINDOW -->
+        <div class="lg:col-span-3 bg-slate-900/10 border border-slate-800/80 rounded-lg p-6 flex flex-col justify-between min-h-[650px]">
+            
+            <!-- TREAD 1: BARE-METAL BIOS DIRECTIVES -->
+            <div x-show="activeTab === 'bios'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-red-400 tracking-wider mb-2">1. SILICON-LEVEL BARE-METAL FIRMWARE MANIFEST</h2>
+                <p class="text-xs text-slate-400 mb-4">Restart the machine, press <code class="text-white">F2</code> repeatedly during initialization to enter the Alienware BIOS environment, and adjust these precise hardware flags:</p>
+                
+                <div class="space-y-3 text-[11px]">
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-amber-400">Intel Dynamic Tuning Technology (DTT) $\rightarrow$ DISABLED</strong>
+                        <p class="text-slate-400 mt-1">Prevents the motherboard firmware from aggressively throttling CPU/GPU power allocations when it detects high multi-stage background tasks (e.g., streaming and running AI training loops concurrently).</p>
+                    </div>
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-amber-400">Advanced Setup $\rightarrow$ Intel Virtualization Technology (VT-x / VT-d) $\rightarrow$ ENABLED</strong>
+                        <p class="text-slate-400 mt-1">Required to establish memory page access for the Hyper-V sub-system layer supporting your WSL2 Linux kernel instance.</p>
+                    </div>
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-amber-400">Advanced Storage Configuration $\rightarrow$ Controller Mode $\rightarrow$ AHCI / NVMe (Non-RAID)</strong>
+                        <p class="text-slate-400 mt-1">Enables direct, unmanaged NVMe command queues to the operating system, bypassing secondary firmware management layers to optimize read/write performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TREAD 2: SYSTEM OPTIMIZATION AUTOMATION SCRIPT -->
+            <div x-show="activeTab === 'registry'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">2. CORE MICROSOFT OS PROVISIONING SCRIPT</h2>
+                <p class="text-xs text-slate-400 mb-4">Run this execution block inside an elevated, administrative PowerShell terminal window instance. Removes proprietary telemetry tools, overrides media network packet limits, optimizes file system read/write loops, and anchors the pagefile system boundaries.</p>
+                <div class="code-container">
+                    <button class="copy-btn" @click="copyToClipboard('ps-recovery-core')">Copy Payload</button>
+                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[400px] scrollbar text-emerald-400" id="ps-recovery-core"><code># Requires -RunAsAdministrator
+Write-Host "[*] Executing Core OS Optimization Sequence..." -ForegroundColor Cyan
+
+# A. TERMINATE PROPRIETARY FILLER SERVICES AND DIAGNOSTIC LOGS
+$ServicesArray = @("KNDBWM", "KillerAnalyticsService", "Killer Network Service", "KAPSService", "DiagTrack")
+foreach ($Service in $ServicesArray) {
+    if (Get-Service -Name $Service -ErrorAction SilentlyContinue) {
+        Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue
+        Set-Service -Name $Service -StartupType Disabled
+        Write-Host "[SUCCESS] Deactivated service: $Service" -ForegroundColor Green
+    }
+}
+Unregister-ScheduledTask -TaskName "Killer Startup Task" -Confirm:$false -ErrorAction SilentlyContinue
+
+# B. OVERRIDE MULTIMEDIA CLASS SCHEDULER (MMCSS) CEILINGS
+$ProfileRoute = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
+Set-ItemProperty -Path $ProfileRoute -Name "NetworkThrottlingIndex" -Value 0xffffffff -Type DWord -Force
+Set-ItemProperty -Path $ProfileRoute -Name "SystemResponsiveness" -Value 0 -Type DWord -Force
+
+# C. RE-INDEX ADVANCED INTERFACE ROUTING TABLES
+$EthAdapter = Get-NetAdapter | Where-Object { $_.HardwareInterface -and $_.MediaType -eq "802.3" -and $_.Status -eq "Up" }
+$WfiAdapter = Get-NetAdapter | Where-Object { $_.HardwareInterface -and $_.MediaType -eq "Native 802.11" }
+if ($EthAdapter) { Set-NetIPInterface -InterfaceAlias $EthAdapter.Name -AddressFamily IPv4 -InterfaceMetric 5 }
+if ($WfiAdapter) { Set-NetIPInterface -InterfaceAlias $WfiAdapter.Name -AddressFamily IPv4 -InterfaceMetric 35 }
+
+# D. ENABLE HARDWARE-ACCELERATED GPU SCHEDULING (HAGS)
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "HwSchMode" -Value 2 -Type DWord -Force
+
+# E. ADVANCED NTFS ACCELERATION SCHEMAS
+fsutil behavior set disablelastaccess 1 | Out-Null
+fsutil behavior set disable8dot3 1 | Out-Null
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "NtfsMftZoneReservation" -Value 2 -Type DWord -Force
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -Type DWord -Force
+
+# F. LOCK STABLE CONTIGUOUS SWAP SPACE (16GB PAGEFILE PIN)
+$CimSystem = Get-CimInstance -ClassName Win32_ComputerSystem
+$CimSystem | Set-CimInstance -Property @{AutomaticManagedPagefile = $False}
+$ActivePagefile = Get-CimInstance -ClassName Win32_PageFileSetting | Where-Object {$_.Name -like "C:*"}
+if ($ActivePagefile) { $ActivePagefile | Remove-CimInstance }
+New-CimInstance -ClassName Win32_PageFileSetting -Property @{Name = "C:\pagefile.sys"; InitialSize = 16384; MaximumSize = 16384}
+
+# G. HIGH PRIORITY INTERRUPT SCHEDULING KEYS FOR LIVE AUDIO DRIVERS
+$AudioKey = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio"
+Set-ItemProperty -Path $AudioKey -Name "Background Only" -Value "False" -Type String -Force
+Set-ItemProperty -Path $AudioKey -Name "GPU Priority" -Value 8 -Type DWord -Force
+Set-ItemProperty -Path $AudioKey -Name "Priority" -Value 6 -Type DWord -Force
+Set-ItemProperty -Path $AudioKey -Name "Scheduling Category" -Value "High" -Type String -Force
+Set-ItemProperty -Path $AudioKey -Name "SFIO Priority" -Value "High" -Type String -Force
+
+Write-Host "[SUCCESS] Core structural framework initialized. Reboot computer." -ForegroundColor Yellow</code></pre>
+                </div>
+            </div>
+
+            <!-- TREAD 3: PYTHON GH COPILOT PREFERENCE MAPPER -->
+            <div x-show="activeTab === 'copilot'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">3. LOCAL COPILOT AUTOMATION OVERRIDE SYSTEM</h2>
+                <p class="text-xs text-slate-400 mb-4">Monitors execution metrics for running background processes, translates them via the authenticated GitHub Copilot CLI interpreter tool, and maps high-performance dGPU parameters to the user registry paths.</p>
+                <div class="code-container">
+                    <button class="copy-btn" @click="copyToClipboard('py-recovery-copilot')">Copy Script</button>
+                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[400px] scrollbar text-emerald-400" id="py-recovery-copilot"><code>import subprocess, psutil, winreg, json, sys
+
+print("[*] Tracking system baseline process threads for 5 seconds...")
+active_processes = set()
+ignore_filters = {"svchost", "explorer", "conhost", "runtimebroker", "idle", "system", "lsass", "services"}
+
+for _ in range(5):
+    for process in psutil.process_iter(['name', 'exe']):
+        try:
+            name = process.info['name'].lower().replace(".exe", "")
+            route = process.info['exe']
+            if route and name not in ignore_filters: active_processes.add(route)
+        except (psutil.NoSuchProcess, psutil.AccessDenied): continue
+    subprocess.run(["timeout", "/t", "1"] if sys.platform == "win32" else ["sleep", "1"], shell=True)
+
+ai_prompt = (
+    f"Analyze these specific running paths:\n{chr(10).join(active_processes)}\n\n"
+    "Identify which executables are gaming applications, broadcasting suites (OBS Studio/TikTok Studio), or AI training frameworks that require discrete dGPU hardware access. "
+    "Return ONLY a valid string-based JSON array of the parsed file paths. Do not include markdown accents or conversation."
+)
+
+try:
+    copilot_call = subprocess.run(["gh", "copilot", "explain", ai_prompt], capture_output=True, text=True, check=True)
+    raw_output = copilot_call.stdout
+    if "```json" in raw_output: raw_output = raw_output.split("```json")[1].split("```")[0].strip()
+    elif "```" in raw_output: raw_output = raw_output.split("```")[1].split("```")[0].strip()
+    target_routes = json.loads(raw_output.strip())
+except Exception as e:
+    print(f"[X] Execution failed. Ensure 'gh copilot' authentication state is valid. Error: {e}"); sys.exit()
+
+print("\n========================= PROPOSED PATH REGISTRY MAP =========================")
+for path in target_routes: print(f"[MAPPED TARGET] FORCE DISCRETE GPU TIER: {path}")
+
+if input("\nCommit these DirectX performance modifications to user registry? (y/n): ").lower() == 'y':
+    key_handle = winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", 0, winreg.KEY_SET_VALUE)
+    for path in target_routes: winreg.SetValueEx(key_handle, path, 0, winreg.REG_SZ, "GpuPreference=2;")
+    winreg.CloseKey(key_handle)
+    print("[SUCCESS] Hardware parameters assigned successfully.")</code></pre>
+                </div>
+            </div>
+
+            <!-- TREAD 4: FLEXASIO AND TOML SETUP PARAMETERS -->
+            <div x-show="activeTab === 'audio_layer'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">4. LOW-LATENCY AUDIO DRIVER BRIDGE MANIFEST</h2>
+                <p class="text-xs text-slate-400 mb-4">Paste this payload precisely within your target directory path <code class="text-white text-[11px]">C:\Users\YOUR_USERNAME\FlexASIO.toml</code>. Forces exclusive kernel execution boundaries, bypassing Windows audio resampling layers.</p>
+                <div class="code-container">
+                    <button class="copy-btn" @click="copyToClipboard('toml-recovery-block')">Copy TOML</button>
+                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[400px] scrollbar text-emerald-400" id="toml-recovery-block"><code># FlexASIO Production Hardware Interface Definition Profile
+backend = "Windows WASAPI"
+
+[input]
+# Lock onto the physical USB hardware configuration string of the Razer headset mic
+device = "Microphone (Razer Headset)"
+suggestedLatencySeconds = 0.005
+wasapiExclusiveMode = true
+
+[output]
+# Route out through the kernel-level virtual audio loopback cable channel
+device = "Virtual Audio Cable Line 1"
+suggestedLatencySeconds = 0.005
+wasapiExclusiveMode = true</code></pre>
+                </div>
+                <div class="mt-4 bg-slate-950 p-4 border border-slate-800 rounded text-[11px] text-slate-400 leading-relaxed">
+                    <span class="text-red-400 font-bold">The Broadcast Sidechain Filter Architecture:</span> Inside TikTok Studio or OBS, go to your Game Audio mixer source, add a <span class="text-white">Compressor Filter</span>, set the Sidechain/Ducking Source to target your <span class="text-white">Virtual Audio Cable Output (Reaper Mic Channel)</span>, and apply these exact values: <span class="text-white">Ratio = 3.0:1, Threshold = -30 dB, Attack = 10 ms, Release = 300 ms</span>.
+                </div>
+            </div>
+
+            <!-- TREAD 5: REAPER ZERO LOOKAHEAD VST SCHEMA -->
+            <div x-show="activeTab === 'reaper_chain'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">5. REAPER ZERO-LATENCY VST FILTER SCHEMATIC</h2>
+                <p class="text-xs text-slate-400 mb-4">Map these zero-algorithmic-lookahead modules from top to bottom on your primary monitored microphone input lane inside your Reaper project setup:</p>
+                
+                <div class="space-y-2 text-[11px] max-h-[400px] overflow-y-auto scrollbar pr-2">
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-cyan-400 font-bold block mb-1">STAGE 1: VST: ReaGate (Noise Suppression Floor)</strong>
+                        Set <code class="text-white">Threshold = -40 dB</code> (adjust above fan idle noise profile). Set <code class="text-white">Attack = 3 ms</code> (prevents clipping the first syllables of your words), <code class="text-white">Hold = 100 ms</code>, <code class="text-white">Release = 200 ms</code>, <code class="text-white">Hysteresis = -6 dB</code>.
+                    </div>
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-cyan-400 font-bold block mb-1">STAGE 2: VST: ReaEQ (Vocal Frequency Focus Tuning)</strong>
+                        • Band 1 (High Pass Filter): 85 Hz (Eliminates low-end mechanical desk resonance)<br>
+                        • Band 2 (Band): 300 Hz | Gain: -2.5 dB | BW: 2.0 (Removes headset boxiness)<br>
+                        • Band 3 (Band): 3.5 kHz | Gain: +2.0 dB | BW: 1.5 (Improves vocal clarity for in-game callouts)<br>
+                        • Band 4 (High Shelf): 10 kHz | Gain: +1.5 dB (Adds crisp air and presence to the broadcast stream)
+                    </div>
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-cyan-400 font-bold block mb-1">STAGE 3: VST: ReaComp (Vocal Leveler Dynamics)</strong>
+                        Set <code class="text-white">Ratio = 3.0:1</code>, <code class="text-white">Attack = 5 ms</code>, <code class="text-white">Release = 100 ms</code>. Adjust the threshold slider until the Gain Reduction meter shows roughly <code class="text-white">-3 dB to -5 dB</code> of compression. Set Wet Makeup Gain to <code class="text-white">+2.5 dB</code>.
+                    </div>
+                    <div class="bg-slate-950 p-3 border border-slate-800 rounded">
+                        <strong class="text-cyan-400 font-bold block mb-1">STAGE 4: VST: ReaLimit (Transparent Brickwall Safety Ceiling)</strong>
+                        Lock <code class="text-white">Brickwall Ceiling = -1.0 dB</code>. Keep additional algorithmic gain at <code class="text-white">0.0 dB</code>. Provides a safety ceiling to prevent volume spikes from clipping the broadcast mix encoder.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TREAD 6: WSL2 LINUX CONSOLE TENSORRT-LLM ENGINE SETUP -->
+            <div x-show="activeTab === 'tensorrt'" x-transition class="flex-grow">
+                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">6. TENSORRT-LLM LINUX COMPILATION DEPLOYMENT CONSOLE</h2>
+                <p class="text-xs text-slate-400 mb-4">Execute these environment setups, checkouts, format mappings, and compilation parameters sequentially inside your active WSL2 Ubuntu core terminal environment:</p>
+                <div class="code-container">
+                    <button class="copy-btn" @click="copyToClipboard('wsl-recovery-tensor')">Copy Script</button>
+                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[380px] scrollbar text-emerald-400" id="wsl-recovery-tensor"><code># 1. SETUP DEVELOPMENT UTILITIES & STACK CORE MAPPINGS
+sudo apt-get update && sudo apt-get install -y git-lfs python3-pip python3-venv
+git lfs install
+git clone -b v0.19.0 https://github.com/NVIDIA/TensorRT-LLM.git
+cd TensorRT-LLM
+git submodule update --init --recursive
+
+# 2. RUNTIME ENVIRONMENT VIRTUAL PIN & SPEED OPTIMIZATION
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install tensorrt_llm --extra-index-url https://pypi.nvidia.com --extra-index-url https://download.pytorch.org/whl/cu126
+
+# 3. PULL TARGET LANGUAGE ENGINE WEIGHTS FROM HUGGINGFACE HUB
+cd examples
+git clone https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
+
+# 4. RUNTIME MATRIX CONVERSION (CHECKPOINT FOR FASTERTRANSFORMER LAYOUTS)
+python3 llama/convert_checkpoint.py \
+    --model_dir ./Llama-3.1-8B-Instruct \
+    --output_dir ./trt_ckpts/llama-8b-fp8/ \
+    --dtype float16 \
+    --storage-type fp8
+
+# 5. GENERATE TENSORRT COMPILATION ENGINES (PAGED KV CACHE ENABLE)
+trtllm_build \
+    --checkpoint_dir ./trt_ckpts/llama-8b-fp8/ \
+    --output_dir ./engines/llama-8b-fp8/ \
+    --gemm_plugin float16 \
+    --gpt_attention_plugin float16 \
+    --tokens_per_block 64 \
+    --paged_kv_cache enable \
+    --remove_input_padding enable \
+    --use_custom_all_reduce enable
+
+# 6. SPIN ENGINE OPENAI COMPATIBLE INFERENCE SERVICE HOST
+trtllm-serve ./engines/llama-8b-fp8/ --port 8000 --max_num_seqs 32 --enable_chunked_prefill</code></pre>
+                </div>
+            </div>
+
+            <!-- SHARED RUNTIME STATE FOOTER -->
+            <footer class="mt-4 border-t border-slate-800/60 pt-4 flex flex-col md:flex-row justify-between items-start md:items-center text-[10px] text-slate-500 gap-2 font-bold">
+                <span>SYSTEM PARAMETERS RUNTIME MATRIX STATUS: VERIFIED FULL SESSION COMPLIANCE</span>
+                <span>VERIFY ELEVATED PRIVILEGES ACROSS SYSTEM CONSOLES PRIOR TO RUNS</span>
+            </footer>
+
+        </div>
+    </main>
+
+</body>
+</html>
