@@ -86,10 +86,7 @@
                 <span>2. CORE OS PROVISIONING</span>
                 <span class="text-[9px] opacity-60">POWERSHELL</span>
             </button>
-            <button @click="activeTab = 'copilot'" :class="activeTab === 'copilot' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
-                <span>3. COPILOT BACKEND ENGINE</span>
-                <span class="text-[9px] opacity-60">PYTHON</span>
-            </button>
+            
             <button @click="activeTab = 'audio_layer'" :class="activeTab === 'audio_layer' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
                 <span>4. FLEXASIO TUNING PROTOCOL</span>
                 <span class="text-[9px] opacity-60">TOML MATRIX</span>
@@ -98,10 +95,7 @@
                 <span>5. LOW-LATENCY VST SCHEMA</span>
                 <span class="text-[9px] opacity-60">REAPER FILTERS</span>
             </button>
-            <button @click="activeTab = 'tensorrt'" :class="activeTab === 'tensorrt' ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 font-bold' : 'bg-slate-900/20 border-slate-800 text-slate-400 hover:border-slate-700'" class="w-full text-left px-4 py-3 border text-xs tracking-wide rounded transition flex justify-between items-center">
-                <span>6. LOCAL TENSORRT-LLM PIPELINE</span>
-                <span class="text-[9px] opacity-60">LINUX CONSOLE</span>
-            </button>
+            
         </div>
 
         <!-- MAIN MATRIX INTERACTIVE WINDOW -->
@@ -187,52 +181,6 @@ Write-Host "[SUCCESS] Core structural framework initialized. Reboot computer." -
                 </div>
             </div>
 
-            <!-- TREAD 3: PYTHON GH COPILOT PREFERENCE MAPPER -->
-            <div x-show="activeTab === 'copilot'" x-transition class="flex-grow">
-                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">3. LOCAL COPILOT AUTOMATION OVERRIDE SYSTEM</h2>
-                <p class="text-xs text-slate-400 mb-4">Monitors execution metrics for running background processes, translates them via the authenticated GitHub Copilot CLI interpreter tool, and maps high-performance dGPU parameters to the user registry paths.</p>
-                <div class="code-container">
-                    <button class="copy-btn" @click="copyToClipboard('py-recovery-copilot')">Copy Script</button>
-                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[400px] scrollbar text-emerald-400" id="py-recovery-copilot"><code>import subprocess, psutil, winreg, json, sys
-
-print("[*] Tracking system baseline process threads for 5 seconds...")
-active_processes = set()
-ignore_filters = {"svchost", "explorer", "conhost", "runtimebroker", "idle", "system", "lsass", "services"}
-
-for _ in range(5):
-    for process in psutil.process_iter(['name', 'exe']):
-        try:
-            name = process.info['name'].lower().replace(".exe", "")
-            route = process.info['exe']
-            if route and name not in ignore_filters: active_processes.add(route)
-        except (psutil.NoSuchProcess, psutil.AccessDenied): continue
-    subprocess.run(["timeout", "/t", "1"] if sys.platform == "win32" else ["sleep", "1"], shell=True)
-
-ai_prompt = (
-    f"Analyze these specific running paths:\n{chr(10).join(active_processes)}\n\n"
-    "Identify which executables are gaming applications, broadcasting suites (OBS Studio/TikTok Studio), or AI training frameworks that require discrete dGPU hardware access. "
-    "Return ONLY a valid string-based JSON array of the parsed file paths. Do not include markdown accents or conversation."
-)
-
-try:
-    copilot_call = subprocess.run(["gh", "copilot", "explain", ai_prompt], capture_output=True, text=True, check=True)
-    raw_output = copilot_call.stdout
-    if "```json" in raw_output: raw_output = raw_output.split("```json")[1].split("```")[0].strip()
-    elif "```" in raw_output: raw_output = raw_output.split("```")[1].split("```")[0].strip()
-    target_routes = json.loads(raw_output.strip())
-except Exception as e:
-    print(f"[X] Execution failed. Ensure 'gh copilot' authentication state is valid. Error: {e}"); sys.exit()
-
-print("\n========================= PROPOSED PATH REGISTRY MAP =========================")
-for path in target_routes: print(f"[MAPPED TARGET] FORCE DISCRETE GPU TIER: {path}")
-
-if input("\nCommit these DirectX performance modifications to user registry? (y/n): ").lower() == 'y':
-    key_handle = winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", 0, winreg.KEY_SET_VALUE)
-    for path in target_routes: winreg.SetValueEx(key_handle, path, 0, winreg.REG_SZ, "GpuPreference=2;")
-    winreg.CloseKey(key_handle)
-    print("[SUCCESS] Hardware parameters assigned successfully.")</code></pre>
-                </div>
-            </div>
 
             <!-- TREAD 4: FLEXASIO AND TOML SETUP PARAMETERS -->
             <div x-show="activeTab === 'audio_layer'" x-transition class="flex-grow">
@@ -288,51 +236,7 @@ wasapiExclusiveMode = true</code></pre>
                 </div>
             </div>
 
-            <!-- TREAD 6: WSL2 LINUX CONSOLE TENSORRT-LLM ENGINE SETUP -->
-            <div x-show="activeTab === 'tensorrt'" x-transition class="flex-grow">
-                <h2 class="text-sm font-bold text-cyan-400 tracking-wider mb-2">6. TENSORRT-LLM LINUX COMPILATION DEPLOYMENT CONSOLE</h2>
-                <p class="text-xs text-slate-400 mb-4">Execute these environment setups, checkouts, format mappings, and compilation parameters sequentially inside your active WSL2 Ubuntu core terminal environment:</p>
-                <div class="code-container">
-                    <button class="copy-btn" @click="copyToClipboard('wsl-recovery-tensor')">Copy Script</button>
-                    <pre class="bg-slate-950 p-4 rounded border border-slate-800 text-[11px] overflow-x-auto max-h-[380px] scrollbar text-emerald-400" id="wsl-recovery-tensor"><code># 1. SETUP DEVELOPMENT UTILITIES & STACK CORE MAPPINGS
-sudo apt-get update && sudo apt-get install -y git-lfs python3-pip python3-venv
-git lfs install
-git clone -b v0.19.0 https://github.com/NVIDIA/TensorRT-LLM.git
-cd TensorRT-LLM
-git submodule update --init --recursive
-
-# 2. RUNTIME ENVIRONMENT VIRTUAL PIN & SPEED OPTIMIZATION
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install tensorrt_llm --extra-index-url https://pypi.nvidia.com --extra-index-url https://download.pytorch.org/whl/cu126
-
-# 3. PULL TARGET LANGUAGE ENGINE WEIGHTS FROM HUGGINGFACE HUB
-cd examples
-git clone https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
-
-# 4. RUNTIME MATRIX CONVERSION (CHECKPOINT FOR FASTERTRANSFORMER LAYOUTS)
-python3 llama/convert_checkpoint.py \
-    --model_dir ./Llama-3.1-8B-Instruct \
-    --output_dir ./trt_ckpts/llama-8b-fp8/ \
-    --dtype float16 \
-    --storage-type fp8
-
-# 5. GENERATE TENSORRT COMPILATION ENGINES (PAGED KV CACHE ENABLE)
-trtllm_build \
-    --checkpoint_dir ./trt_ckpts/llama-8b-fp8/ \
-    --output_dir ./engines/llama-8b-fp8/ \
-    --gemm_plugin float16 \
-    --gpt_attention_plugin float16 \
-    --tokens_per_block 64 \
-    --paged_kv_cache enable \
-    --remove_input_padding enable \
-    --use_custom_all_reduce enable
-
-# 6. SPIN ENGINE OPENAI COMPATIBLE INFERENCE SERVICE HOST
-trtllm-serve ./engines/llama-8b-fp8/ --port 8000 --max_num_seqs 32 --enable_chunked_prefill</code></pre>
-                </div>
-            </div>
+            
 
             <!-- SHARED RUNTIME STATE FOOTER -->
             <footer class="mt-4 border-t border-slate-800/60 pt-4 flex flex-col md:flex-row justify-between items-start md:items-center text-[10px] text-slate-500 gap-2 font-bold">
